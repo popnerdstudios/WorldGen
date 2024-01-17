@@ -346,8 +346,6 @@ body {
   flex-direction: column;
   align-items: center;
   width: 70vw;
-
-  zoom: 0.9;
 }
 
 .tools h2{
@@ -360,13 +358,19 @@ body {
 }
 
 .tool-list{
-  height: 72vh;
-  width: 70vw;
+  height: 65vh;
+  width: 80vw;
 
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); 
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); 
   justify-content: center; 
-  gap: 0px 30px;
+  gap: 15px 30px;
+  padding-right: 30px;
+
+  transform: scale(0.9);
+  overflow-x: hidden;
+  overflow-y: auto;
+
 }
 
 .tool{
@@ -374,7 +378,6 @@ body {
   height: 200px;
   width: 250px;
   border-radius: 10px;
-  margin: 20px;
   text-align: left;
   box-shadow: 3px 3px 5px var(--secondary-highlight);
   text-decoration: none;
@@ -442,8 +445,6 @@ body {
   flex-direction: column;
   align-items: center;
   width: 70vw;
-
-  zoom: 0.9;
 }
 
 .documentation code{
@@ -453,18 +454,25 @@ body {
 }
 
 .documentation h2{
+  font-size: 22px;
   margin-bottom: 0;
 }
 
 .documentation p{
   margin-top: 5px;
+  margin-bottom: 0px;
+}
+
+.documentation-desc{
+  font-size: 14px;
 }
 
 .markdown{
   text-align: left;
-  height: 70vh;
+  height: 65vh;
   overflow: auto;
   background-color: var(--secondary-highlight);
   padding:20px;
   border-top: 5px solid var(--tertiary-highlight);
+  transform: scale(0.9);
 }

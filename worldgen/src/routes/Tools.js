@@ -9,7 +9,7 @@ const Tools = () => {
   return (
     <div className="tools">
         <h2>Tools</h2>
-        <p>A collection of free built-in and online worldbuilding tools.</p>
+        <p>A collection of built-in and online worldbuilding tools.</p>
         <div className="tool-list">
             <a className="tool" href="https://unsplash.com/" target="_blank">
                 <div className="tool-image" id="free-assets-img"></div>
