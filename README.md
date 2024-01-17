@@ -1,6 +1,6 @@
 # WorldGen
  
-# Open With Electron
+## Open With Electron
 
 ### 1. Clone the Repository
 

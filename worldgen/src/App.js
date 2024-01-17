@@ -1,14 +1,24 @@
 import './App.css';
-import { AiOutlineGlobal, AiOutlinePlus, AiOutlineTool, AiOutlineFileText, AiOutlineSetting } from "react-icons/ai";
+import { AiOutlineGlobal, AiOutlineTool, AiOutlineFileText, AiOutlineSetting } from "react-icons/ai";
 import { FaRegUserCircle, FaGithub } from "react-icons/fa";
-import { HiSparkles } from "react-icons/hi2";
 import { VscChromeMinimize, VscChromeMaximize, VscChromeClose, VscWand } from "react-icons/vsc";
+
+import { HashRouter, Link, Route, Routes } from 'react-router-dom';
+
+import CreateWorld from './routes/CreateWorld'; 
+import HomeEmpty from './routes/HomeContent'; 
+import Tools from './routes/Tools'; 
+import Templates from './routes/Templates'; 
+import Documentation from './routes/Documentation'; 
+
 
 
 const ipcRenderer = window.require("electron").ipcRenderer;
 
+
 function App() {
   return (
+    <HashRouter>
     <div className="App">
 
       <div className="title-bar">
@@ -23,10 +33,10 @@ function App() {
       <div className="App-content">
         <nav className="App-menu">
           <ul>
-            <li><AiOutlineGlobal /><a href="#home">My Worlds</a></li>
-            <li><AiOutlineTool /><a href="#tools">Tools</a></li>
-            <li><VscWand /><a href="#templates">Templates</a></li>
-            <li><AiOutlineFileText /><a href="#documentation">Documentation</a></li>
+            <Link to="/"><li><AiOutlineGlobal /><a>My Worlds</a></li></Link>
+            <Link to="/tools"><li><AiOutlineTool /><a>Tools</a></li></Link>
+            <Link to="/templates"><li><VscWand /><a>Templates</a></li></Link>
+            <Link to="/documentation"><li><AiOutlineFileText /><a>Documentation</a></li></Link>
           </ul>
           <div className="lower-menu">
             <div className="lower-menu-buttons">
@@ -41,31 +51,18 @@ function App() {
         <header className="App-header">
         </header>
 
-        <div className="home-container">
-          <div className="home-empty">
-            <h1>Create a new world.</h1>
-            <h2>How would you like to start?</h2>
-            <div className="home-empty-options">
-              <div className="home-option">
-                <div className="home-empty-add" id="add-empty">
-                  <AiOutlinePlus  size={40} />
-                </div>
-                <h1>Blank World</h1>
-                <p>Start from scratch</p>
-              </div>
-              <div className="home-option">
-                <div className="home-empty-add" id="add-from-template">
-                  <HiSparkles  size={40} />
-                </div>
-                <h1>Use a template</h1>
-                <p>Choose from library</p>
-              </div>
-            </div>
-          </div>
+        <div className="home-container" id="home-container">
+          <Routes>
+            <Route exact path="/" element={<HomeEmpty />}/>
+            <Route exact path="/create-world" element={<CreateWorld />}/>
+            <Route exact path="/tools" element={<Tools />}/>
+            <Route exact path="/templates" element={<Templates />}/>
+            <Route exact path="/documentation" element={<Documentation />}/>
+          </Routes>
         </div>
       </div>
-
     </div>
+    </HashRouter>
   );
 }
 
