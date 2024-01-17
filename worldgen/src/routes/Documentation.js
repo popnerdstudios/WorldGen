@@ -19,7 +19,7 @@ function Documentation() {
   return (
     <div class="documentation">
         <h2>Documentation</h2>
-        <p className="documentation-desc">To view full documentation or to contribute to open source, visit our <a href="https://github.com/popnerdstudios/WorldGen/" target="_blank">GitHub</a></p>
+        <p className="documentation-desc">To view the source code or to contribute to the project, visit our <a href="https://github.com/popnerdstudios/WorldGen/" target="_blank">GitHub</a>.</p>
         <div class="markdown">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{markdown}</ReactMarkdown>
         </div>

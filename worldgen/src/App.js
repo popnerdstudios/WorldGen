@@ -34,8 +34,8 @@ function App() {
         <nav className="App-menu">
           <ul>
             <Link to="/"><li><AiOutlineGlobal /><a>My Worlds</a></li></Link>
-            <Link to="/tools"><li><AiOutlineTool /><a>Tools</a></li></Link>
             <Link to="/templates"><li><VscWand /><a>Templates</a></li></Link>
+            <Link to="/tools"><li><AiOutlineTool /><a>Tools</a></li></Link>
             <Link to="/documentation"><li><AiOutlineFileText /><a>Documentation</a></li></Link>
           </ul>
           <div className="lower-menu">
