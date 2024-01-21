@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
 
+const { ipcRenderer } = window.require('electron');
+
 const options = ['Regional', 'Intercontinental', 'Interplanetary', 'Interstellar', 'Intergalactic', 'Multiversal'];
 const option_desc = ['Your story takes place within a continent/region (eg. Stardew Valley, Lord of the Rings, etc.)', 'Your story takes place across many continents. (eg. Indiana Jones, Uncharted, etc.)', 'Your story takes place within a star system. (eg. The Martian, The Expanse, Destiny, etc.)', 'Your story takes place within a single galaxy. (eg. Star Wars, The Foundation, Mass Effect, etc.)', 'Your story takes place across many galaxies. (eg. Stargate, No Mans Sky, Elite Dangerous, etc.)', 'Your story takes place across universes. (eg. Marvel Comics, His Dark Materials, etc.)'];
 
@@ -13,6 +15,24 @@ const CreateWorld = () => {
   
     const handleChange = (_, newValue) => {
       setSliderValue(newValue);
+    };
+
+    const handleCreate = () => {
+        const worldData = {
+            name: worldName,
+            description: worldDescription,
+            size: options[sliderValue]
+        };
+
+        ipcRenderer.send('add-world', worldData);
+        
+        ipcRenderer.once('add-world-response', (_, response) => {
+            if (response.status === 'success') {
+                console.log("Created World!")
+            } else {
+                console.log("Error Creating World!")
+            }
+        });
     };
   
     return (
@@ -54,7 +74,7 @@ const CreateWorld = () => {
 
         <div class="create-buttons">
             <Link to="/"><button class="cancel-button">Cancel</button></Link>
-            <button class="create-button">Create</button>
+            <button class="create-button" onClick={handleCreate}>Create</button>
         </div>
       </div>
     );

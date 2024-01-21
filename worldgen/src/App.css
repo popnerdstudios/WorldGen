@@ -111,18 +111,32 @@
   padding-bottom: 10px;
 }
 
-.App-menu li:hover {
+.active {
   background-color: var(--tertiary-color); 
-  color: var(--primary-highlight); ; 
+  color: var(--primary-highlight); 
 }
 
-.App-menu li:hover a{
-  color: var(--primary-highlight); ; 
+.active svg {
+  color: var(--primary-highlight); 
 }
 
-.App-menu li:hover svg{
-  color: var(--primary-highlight); ; 
+.active a {
+  color: var(--primary-highlight) !important; 
 }
+
+.menu-item:not(.active):hover {
+  background-color: var(--tertiary-color); 
+  color: var(--primary-highlight); 
+}
+
+.menu-item:not(.active):hover svg {
+  color: var(--primary-highlight); 
+}
+
+.menu-item:not(.active):hover a {
+  color: var(--primary-highlight); 
+}
+
 
 .lower-menu{
   border-top: 1px solid var(--secondary-color);
@@ -164,7 +178,7 @@ body {
   font-family: 'Ubuntu';
 }
 
-/* Home */
+/* Home Container */
 
 .home-container{
   display: flex;
@@ -243,6 +257,106 @@ body {
   border-radius: 10px;
 }
 
+/* My Worlds */
+
+.home-intro {
+  display: flex;
+  align-items: center; 
+  justify-content: space-between; 
+}
+
+.home-main{
+  text-align: left;
+  height: 80vh;
+}
+
+.home-main h2{
+  font-size: 22px;
+  margin: 0;
+  margin-left: 5px;
+}
+
+.home-main p{
+  font-size: 14px;
+  margin: 5px;
+ }
+
+.home-buttons{
+  text-align: end;
+}
+
+.home-buttons a{
+  background-color: var(--tertiary-color);
+}
+
+.home-buttons .MuiButton-root {
+  background-color: var(--tertiary-color);
+  border-right: 1px solid var(--secondary-color) !important;
+  font-size: 11px; 
+}
+
+.home-buttons .MuiButtonBase-root {
+  font-size: 11px; 
+}
+
+.home-buttons button:hover{
+  background-color: var(--secondary-color);
+}
+
+.project-list {
+  display: table;
+  width: 75vw;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.project {
+  display: table-row;
+  background-color: var(--primary-highlight);
+  box-shadow: 3px 3px 5px var(--secondary-highlight);
+}
+
+#project-template{
+  background-color: var(--primary-color);
+  box-shadow: none;
+  color: var(--secondary-color);
+}
+
+#project-name-template{
+  font-weight: 100;
+}
+
+.project-name, .project-size, .project-desc {
+  display: table-cell;
+  padding: 8px;
+}
+
+.project-name {
+  font-weight: 900;
+  width: 30%; 
+}
+
+.project-size {
+  width: 20%;
+}
+
+.project-desc {
+  width: 50%; 
+}
+
+.project-options {
+  display: table-cell;
+  text-align: right; 
+  padding: 8px;
+}
+
+.project-button{
+  color: var(--secondary-color);
+}
+
+.project-button:hover{
+  color: var(--secondary-highlight);
+}
 
 /* Create World */
 
@@ -349,10 +463,12 @@ body {
 }
 
 .templates h2{
+  font-size: 22px;
   margin: 0px;
 }
 
 .templates p{
+  font-size: 14px;
   margin: 5px;
   margin-bottom: 20px;
 }
@@ -432,12 +548,14 @@ body {
 }
 
 .tools h2{
+  font-size: 22px;
   margin: 0px;
 }
 
 .tools p{
   margin: 5px;
   margin-bottom: 20px;
+  font-size: 14px;
 }
 
 .tool-list{

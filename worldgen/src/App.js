@@ -3,10 +3,10 @@ import { AiOutlineGlobal, AiOutlineTool, AiOutlineFileText, AiOutlineSetting } f
 import { FaRegUserCircle, FaGithub } from "react-icons/fa";
 import { VscChromeMinimize, VscChromeMaximize, VscChromeClose, VscWand } from "react-icons/vsc";
 
-import { HashRouter, Link, Route, Routes } from 'react-router-dom';
+import { HashRouter, Link, NavLink, Route, Routes } from 'react-router-dom';
 
 import CreateWorld from './routes/CreateWorld'; 
-import HomeEmpty from './routes/HomeContent'; 
+import HomeContent from './routes/HomeContent'; 
 import Tools from './routes/Tools'; 
 import Templates from './routes/Templates'; 
 import Documentation from './routes/Documentation'; 
@@ -33,10 +33,10 @@ function App() {
       <div className="App-content">
         <nav className="App-menu">
           <ul>
-            <Link to="/"><li><AiOutlineGlobal /><a>My Worlds</a></li></Link>
-            <Link to="/templates"><li><VscWand /><a>Templates</a></li></Link>
-            <Link to="/tools"><li><AiOutlineTool /><a>Tools</a></li></Link>
-            <Link to="/documentation"><li><AiOutlineFileText /><a>Documentation</a></li></Link>
+            <NavLink to="/" className="menu-item" activeClassName="active"><li><AiOutlineGlobal /><a>My Worlds</a></li></NavLink>
+            <NavLink to="/templates" className="menu-item" activeClassName="active"><li><VscWand /><a>Templates</a></li></NavLink>
+            <NavLink to="/tools" className="menu-item" activeClassName="active"><li><AiOutlineTool /><a>Tools</a></li></NavLink>
+            <NavLink to="/documentation" className="menu-item" activeClassName="active"><li><AiOutlineFileText /><a>Documentation</a></li></NavLink>
           </ul>
           <div className="lower-menu">
             <div className="lower-menu-buttons">
@@ -53,7 +53,7 @@ function App() {
 
         <div className="home-container" id="home-container">
           <Routes>
-            <Route exact path="/" element={<HomeEmpty />}/>
+            <Route exact path="/" element={<HomeContent />}/>
             <Route exact path="/create-world" element={<CreateWorld />}/>
             <Route exact path="/tools" element={<Tools />}/>
             <Route exact path="/templates" element={<Templates />}/>

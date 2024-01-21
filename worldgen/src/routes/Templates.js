@@ -17,30 +17,16 @@ const Templates = () => {
             <a className="template">
                 <div className="template-image"> </div>
                 <FaMap size={30} className="template-icon"/>
-                <h2 className="template-name">Peaceful Village</h2>
+                <h2 className="template-name">Dungeons & Dragons</h2>
                 <h3 className="template-tag">REGIONAL</h3>
-                <p className="template-desc">A small village with shops, farms, and citizens.</p>
-            </a>
-            <a className="template">
-                <div className="template-image"> </div>
-                <FaMap size={30} className="template-icon"/>
-                <h2 className="template-name">Magical Kingdom</h2>
-                <h3 className="template-tag">REGIONAL</h3>
-                <p className="template-desc">A fantasy world with kingdoms, factions, and magic.</p>
+                <p className="template-desc">A fantasy world with factions, monsters and magic.</p>
             </a>
             <a className="template">
                 <div className="template-image"> </div>
                 <FaGlobe size={30} className="template-icon"/>
-                <h2 className="template-name">Post-Apocalyptic</h2>
+                <h2 className="template-name">World Racing</h2>
                 <h3 className="template-tag">INTERCONTINENTAL</h3>
-                <p className="template-desc">A post-apocalyptic world with factions and technology.</p>
-            </a>
-            <a className="template">
-                <div className="template-image"> </div>
-                <FaGlobe size={30} className="template-icon"/>
-                <h2 className="template-name">Pirate Society</h2>
-                <h3 className="template-tag">INTERCONTINENTAL</h3>
-                <p className="template-desc">A world of pirates and hidden treasures.</p>
+                <p className="template-desc">A worldwide racing tournament.</p>
             </a>
             <a className="template">
                 <div className="template-image"> </div>
@@ -51,38 +37,24 @@ const Templates = () => {
             </a>
             <a className="template">
                 <div className="template-image"> </div>
-                <IoMdPlanet size={30} className="template-icon"/>
-                <h2 className="template-name">Cosmic Horror</h2>
-                <h3 className="template-tag">INTERPLANETARY</h3>
-                <p className="template-desc">A solar system facing a cosmic threat.</p>
-            </a>
-            <a className="template">
-                <div className="template-image"> </div>
                 <BsStars size={30} className="template-icon"/>
-                <h2 className="template-name">Space Exploration</h2>
+                <h2 className="template-name">Star Exploration</h2>
                 <h3 className="template-tag">INTERSTELLAR</h3>
                 <p className="template-desc">An advanced spacefaring civilization.</p>
-            </a>
-            <a className="template">
-                <div className="template-image"> </div>
-                <BsStars size={30} className="template-icon"/>
-                <h2 className="template-name">Interstellar Kingdom</h2>
-                <h3 className="template-tag">INTERSTELLAR</h3>
-                <p className="template-desc">A large and colonial interstellar empire.</p>
             </a>
             <a className="template">
                 <div className="template-image"> </div>
                 <GiStarSwirl size={30} className="template-icon"/>
                 <h2 className="template-name">Space Fantasy</h2>
                 <h3 className="template-tag">INTERGALACTIC</h3>
-                <p className="template-desc">A magical universe with countless species.</p>
+                <p className="template-desc">A mystical universe with ancient mysteries.</p>
             </a>
             <a className="template">
                 <div className="template-image"> </div>
                 <BsDatabase  size={30} className="template-icon"/>
-                <h2 className="template-name">Mystical Multiverse</h2>
+                <h2 className="template-name">Superhero</h2>
                 <h3 className="template-tag">MULTIVERSAL</h3>
-                <p className="template-desc">An ancient multiverse with cosmic mysteries.</p>
+                <p className="template-desc">A multiversal superhero saga.</p>
             </a>
         </div>
     </div>
