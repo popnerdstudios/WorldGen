@@ -21,7 +21,8 @@ const CreateWorld = () => {
         const worldData = {
             name: worldName,
             description: worldDescription,
-            size: options[sliderValue]
+            size: options[sliderValue],
+            hexColor: '#404040'
         };
 
         ipcRenderer.send('add-world', worldData);

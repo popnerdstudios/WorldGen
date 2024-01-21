@@ -4,6 +4,7 @@ exports.up = function(knex) {
       table.string('name');
       table.text('description');
       table.integer('size');
+      table.string('hex_color').defaultTo('#404040'); 
     });
   };
   

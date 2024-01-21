@@ -22,13 +22,28 @@ ipcMain.on('add-world', async (event, worldData) => {
       const [id] = await knex('worlds').insert({
         name: worldData.name,
         description: worldData.description,
-        size: worldData.size
+        size: worldData.size,
+        hex_color: worldData.hexColor || '#404040' 
       });
       event.reply('add-world-response', { id: id, status: 'success' });
     } catch (error) {
       event.reply('add-world-response', { status: 'error', message: error.message });
     }
-  });
+});
+
+
+  ipcMain.on('get-world', async (event, worldId) => {
+    try {
+        const world = await knex('worlds').where({ id: worldId }).first();
+        if (world) {
+            event.reply('get-world-response', { status: 'success', data: world });
+        } else {
+            event.reply('get-world-response', { status: 'error', message: 'World not found' });
+        }
+    } catch (error) {
+        event.reply('get-world-response', { status: 'error', message: error.message });
+    }
+});
 
 ipcMain.on('get-worlds', async (event) => {
     try {
@@ -39,6 +54,22 @@ ipcMain.on('get-worlds', async (event) => {
     }
 });
 
+ipcMain.on('edit-world', async (event, updatedWorldData) => {
+    try {
+        await knex('worlds')
+            .where({ id: updatedWorldData.id })
+            .update({
+                name: updatedWorldData.name,
+                description: updatedWorldData.description,
+                hex_color: updatedWorldData.hexColor
+            });
+        event.reply('edit-world-response', { status: 'success', id: updatedWorldData.id });
+    } catch (error) {
+        event.reply('edit-world-response', { status: 'error', message: error.message });
+    }
+});
+
+
 ipcMain.on('delete-world', async (event, worldId) => {
     try {
         await knex('worlds').where({ id: worldId }).delete();
@@ -47,4 +78,5 @@ ipcMain.on('delete-world', async (event, worldId) => {
         event.reply('delete-world-response', { status: 'error', message: error.message });
     }
 });
+
 

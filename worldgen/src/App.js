@@ -6,6 +6,7 @@ import { VscChromeMinimize, VscChromeMaximize, VscChromeClose, VscWand } from "r
 import { HashRouter, Link, NavLink, Route, Routes } from 'react-router-dom';
 
 import CreateWorld from './routes/CreateWorld'; 
+import EditWorld from './routes/EditWorld'; 
 import HomeContent from './routes/HomeContent'; 
 import Tools from './routes/Tools'; 
 import Templates from './routes/Templates'; 
@@ -55,6 +56,7 @@ function App() {
           <Routes>
             <Route exact path="/" element={<HomeContent />}/>
             <Route exact path="/create-world" element={<CreateWorld />}/>
+            <Route path="/edit-world/:id" element={<EditWorld />}/>
             <Route exact path="/tools" element={<Tools />}/>
             <Route exact path="/templates" element={<Templates />}/>
             <Route exact path="/documentation" element={<Documentation />}/>

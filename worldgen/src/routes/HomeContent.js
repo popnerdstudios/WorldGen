@@ -188,6 +188,11 @@ const HomeEmpty = () => {
                             open={Boolean(menuAnchorEl[world.id])}
                             onClose={() => handleMenuClose(world.id)}
                         >
+                            <MenuItem onClick={() => { handleMenuClose(world.id); }}>
+                                <Link to={`/edit-world/${world.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                    Edit World
+                                </Link>
+                            </MenuItem>
                             <MenuItem onClick={() => {
                                 handleMenuClose(world.id);
                                 handleDeleteWorld(world.id);

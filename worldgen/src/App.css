@@ -314,6 +314,7 @@ body {
   display: table-row;
   background-color: var(--primary-highlight);
   box-shadow: 3px 3px 5px var(--secondary-highlight);
+  padding: 20px;
 }
 
 #project-template{
