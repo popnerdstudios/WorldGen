@@ -5,17 +5,17 @@ import { VscChromeMinimize, VscChromeMaximize, VscChromeClose, VscWand } from "r
 
 import { HashRouter, Link, NavLink, Route, Routes } from 'react-router-dom';
 
-import CreateWorld from './routes/CreateWorld'; 
-import EditWorld from './routes/EditWorld'; 
-import HomeContent from './routes/HomeContent'; 
-import Tools from './routes/Tools'; 
-import Templates from './routes/Templates'; 
-import Documentation from './routes/Documentation'; 
+import HomeContent from './routes/main/HomeContent'; 
+import Tools from './routes/main/Tools'; 
+import Templates from './routes/main/Templates'; 
+import Documentation from './routes/main/Documentation'; 
 
+import CreateWorld from './routes/menu/CreateWorld'; 
+import EditWorld from './routes/menu/EditWorld'; 
 
+import MapGen from './routes/tools/MapGen'; 
 
 const ipcRenderer = window.require("electron").ipcRenderer;
-
 
 function App() {
   return (
@@ -60,6 +60,7 @@ function App() {
             <Route exact path="/tools" element={<Tools />}/>
             <Route exact path="/templates" element={<Templates />}/>
             <Route exact path="/documentation" element={<Documentation />}/>
+            <Route exact path="/mapgen" element={<MapGen />}/>
           </Routes>
         </div>
       </div>
