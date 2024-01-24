@@ -678,3 +678,39 @@ body {
   border-top: 5px solid var(--tertiary-highlight);
   transform: scale(0.9);
 }
+
+
+/* MapGen */
+
+.map-gen{
+  width: 80vw;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.map-container {
+  height: 300px;
+  width: 600px;
+  position: relative;
+}
+
+.canvas-overlay {
+  position: absolute;
+  bottom: 0;
+  transform: scale(0.2);
+  transform-origin: bottom left;
+}
+
+.heightmap {
+  left: 0;
+}
+
+.thirdmap {
+  left: 120px;
+}
+
+.control-panel {
+  width: 600px;
+  margin-top: 20px;
+}
