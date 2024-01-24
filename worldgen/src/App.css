@@ -711,6 +711,8 @@ body {
 }
 
 .control-panel {
+  padding-top: 20px;
+  padding-bottom: 20px;
   width: 600px;
-  margin-top: 20px;
+  background-color: var(--secondary-highlight);
 }

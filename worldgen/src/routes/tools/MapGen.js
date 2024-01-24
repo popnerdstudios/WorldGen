@@ -1,4 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
 
 class PerlinNoise {
     constructor(seed) {
@@ -106,6 +108,51 @@ class PerlinNoise {
     
 }
 
+class WorleyNoise {
+    constructor(seed, gridResolution = 10) {
+        this.seed = seed;
+        this.gridResolution = gridResolution;
+        this.random = this.seededRandom(seed);
+    }
+
+    seededRandom(seed) {
+        const mask = 0xffffffff;
+        let m_w = (123456789 + seed) & mask;
+        let m_z = (987654321 - seed) & mask;
+
+        return function() {
+            m_z = (36969 * (m_z & 65535) + (m_z >> 16)) & mask;
+            m_w = (18000 * (m_w & 65535) + (m_w >> 16)) & mask;
+
+            let result = ((m_z << 16) + m_w) & mask;
+            result /= 4294967296;
+            return result + 0.5;
+        };
+    }
+
+    noise(x, y, z) {
+        let minDist = Infinity;
+        const cellX = Math.floor(x / this.gridResolution);
+        const cellY = Math.floor(y / this.gridResolution);
+        const cellZ = Math.floor(z / this.gridResolution);
+
+        for (let dx = -1; dx <= 1; dx++) {
+            for (let dy = -1; dy <= 1; dy++) {
+                for (let dz = -1; dz <= 1; dz++) {
+                    const seed = this.seed + cellX + dx + (cellY + dy) * 997 + (cellZ + dz) * 991;
+                    const pointX = (cellX + dx) * this.gridResolution + this.random(seed) * this.gridResolution;
+                    const pointY = (cellY + dy) * this.gridResolution + this.random(seed + 1) * this.gridResolution;
+                    const pointZ = (cellZ + dz) * this.gridResolution + this.random(seed + 2) * this.gridResolution;
+                    const dist = Math.sqrt((x - pointX) ** 2 + (y - pointY) ** 2 + (z - pointZ) ** 2);
+                    minDist = Math.min(minDist, dist);
+                }
+            }
+        }
+
+        return minDist;
+    }
+}
+
 
 const MapGen = () => {
     const canvasRef = useRef(null);
@@ -113,10 +160,10 @@ const MapGen = () => {
     const thirdMapCanvasRef = useRef(null); // Ref for the third map
 
     const [noiseGenerator, setNoiseGenerator] = useState(new PerlinNoise(0));
-    const [noiseType, setNoiseType] = useState('normal'); 
+    const [noiseType, setNoiseType] = useState('fractal'); 
     const [seed, setSeed] = useState(0);
     const [scale, setScale] = useState(0.01);
-    const [sharpness, setSharpness] = useState(4);
+    const [sharpness, setSharpness] = useState(5);
     const [landThreshold] = useState(0.1);
     const [detailScale] = useState(0.05);
     const [detailIntensity, setDetailIntensity] = useState(0.25);
@@ -124,6 +171,13 @@ const MapGen = () => {
     const [waterFalloff, setWaterFalloff] = useState(50); 
     const [waterIntensity, setWaterIntensity] = useState(500);
     const [minElevationIntensity, setMinElevationIntensity] = useState(0.9); 
+    const [edgesAsWater, setEdgesAsWater] = useState(true);
+    const [edgeWidth, setEdgeWidth] = useState(60); // Default width of the water edge
+    const [edgeHeight, setEdgeHeight] = useState(60);
+    const [falloffStrength, setFalloffStrength] = useState(0.3); // Default falloff strength
+    const [colorRangeScaling, setColorRangeScaling] = useState(3); // Default value of 1
+    const [waterColorRangeScaling, setWaterColorRangeScaling] = useState(1); // Default value of 1
+    const [activeControlSet, setActiveControlSet] = useState('landGeneration'); // Default to 'landGeneration'
 
 
     const [landColor, setLandColor] = useState("#24c224");
@@ -152,37 +206,69 @@ const MapGen = () => {
         for (let x = 0; x < canvas.width; x++) {
             for (let y = 0; y < canvas.height; y++) {
                 let baseNoise, detailNoise;
+                let isEdge = false;
 
-                if (noiseType === 'ridged') {
-                    baseNoise = noiseGenerator.ridgedNoise(x * scale, y * scale, 0);
-                    detailNoise = noiseGenerator.ridgedNoise(x * detailScale, y * detailScale, 0);
-                } else if (noiseType === 'warped') {
-                    baseNoise = noiseGenerator.warpedNoise(x * scale, y * scale, 0);
-                    detailNoise = noiseGenerator.warpedNoise(x * detailScale, y * detailScale, 0);
-                } else if (noiseType === 'fractal') {
-                    // For fractal noise, baseNoise and detailNoise can be the same
-                    // or you can apply different octaves, lacunarity, and persistence values for each
-                    baseNoise = noiseGenerator.fractalNoise(x * scale, y * scale, 0, 5, 2.0, 0.5);
-                    detailNoise = noiseGenerator.fractalNoise(x * detailScale, y * detailScale, 0, 5, 2.0, 0.5);
-                } else {
-                    // Default to normal Perlin noise
-                    baseNoise = noiseGenerator.noise(x * scale, y * scale, 0);
-                    detailNoise = noiseGenerator.noise(x * detailScale, y * detailScale, 0);
-                }
+                const distanceToEdge = Math.min(
+                    x, y, 
+                    canvas.width - x - 1, 
+                    canvas.height - y - 1
+                );
+
+                if (edgesAsWater) {
+                    isEdge = true;
+                    
+                    const distanceToHorizontalEdge = Math.min(x, canvas.width - x - 1);
+                    const distanceToVerticalEdge = Math.min(y, canvas.height - y - 1);
         
+                    let horizontalEdgeFalloff = distanceToHorizontalEdge < edgeWidth ? Math.pow(distanceToHorizontalEdge / edgeWidth, falloffStrength) : 1;
+                    let verticalEdgeFalloff = distanceToVerticalEdge < edgeHeight ? Math.pow(distanceToVerticalEdge / edgeHeight, falloffStrength) : 1;
+        
+                    const edgeFalloff = Math.min(horizontalEdgeFalloff, verticalEdgeFalloff);
+        
+        
+                    // Apply edge falloff to the noise values
+                    if (noiseType === 'ridged') {
+                        baseNoise = noiseGenerator.ridgedNoise(x * scale, y * scale, 0) * edgeFalloff;
+                        detailNoise = noiseGenerator.ridgedNoise(x * detailScale, y * detailScale, 0) * edgeFalloff;
+                    } else if (noiseType === 'warped') {
+                        baseNoise = noiseGenerator.warpedNoise(x * scale, y * scale, 0) * edgeFalloff;
+                        detailNoise = noiseGenerator.warpedNoise(x * detailScale, y * detailScale, 0) * edgeFalloff;
+                    } else if (noiseType === 'fractal') {
+                        baseNoise = noiseGenerator.fractalNoise(x * scale, y * scale, 0, 5, 2.0, 0.5) * edgeFalloff;
+                        detailNoise = noiseGenerator.fractalNoise(x * detailScale, y * detailScale, 0, 5, 2.0, 0.5) * edgeFalloff;
+                    } else {
+                        baseNoise = noiseGenerator.noise(x * scale, y * scale, 0) * edgeFalloff;
+                        detailNoise = noiseGenerator.noise(x * detailScale, y * detailScale, 0) * edgeFalloff;
+                    }
+                } else {
+                    if (noiseType === 'ridged') {
+                        baseNoise = noiseGenerator.ridgedNoise(x * scale, y * scale, 0);
+                        detailNoise = noiseGenerator.ridgedNoise(x * detailScale, y * detailScale, 0);
+                    } else if (noiseType === 'warped') {
+                        baseNoise = noiseGenerator.warpedNoise(x * scale, y * scale, 0);
+                        detailNoise = noiseGenerator.warpedNoise(x * detailScale, y * detailScale, 0);
+                    } else if (noiseType === 'fractal') {
+                        baseNoise = noiseGenerator.fractalNoise(x * scale, y * scale, 0, 5, 2.0, 0.5);
+                        detailNoise = noiseGenerator.fractalNoise(x * detailScale, y * detailScale, 0, 5, 2.0, 0.5);
+                    } else {
+                        baseNoise = noiseGenerator.noise(x * scale, y * scale, 0);
+                        detailNoise = noiseGenerator.noise(x * detailScale, y * detailScale, 0);
+                    }
+                }
+
                 let noiseValue = baseNoise + (detailNoise * detailIntensity);
                 noiseValue = Math.pow(noiseValue, sharpness);
+
     
                 let r = 0, g = 0, b = 0;
                 let thirdMapColorValue;
                 if (noiseValue < landThreshold) {
                     // Water
                     let waterDepth = (landThreshold - noiseValue) / landThreshold; 
-                    let waterColorIndex = Math.floor(waterDepth * waterColors.length);
+                    let waterColorIndex = Math.floor(waterDepth * waterColors.length * waterColorRangeScaling);
                     waterColorIndex = Math.min(waterColorIndex, waterColors.length - 1); 
                     [r, g, b] = hexToRgb(waterColors[waterColorIndex]);
     
-                    // Third Map - darker value for water
                     thirdMapColorValue = 50;
                 } else {
                     // Land
@@ -193,7 +279,9 @@ const MapGen = () => {
                     elevationIntensity = 1 - elevationIntensity;
                     elevationIntensity = Math.max(elevationIntensity, minElevationIntensity); 
     
-                    let elevationIndex = Math.floor(((noiseValue - landThreshold) / (1 - landThreshold)) * elevationColors.length);
+                    let elevationIndex = Math.floor(
+                        ((noiseValue - landThreshold) / (1 - landThreshold)) * elevationColors.length * colorRangeScaling
+                    );
                     elevationIndex = Math.min(elevationIndex, elevationColors.length - 1);
                     [r, g, b] = hexToRgb(elevationColors[elevationIndex]);
 
@@ -237,7 +325,7 @@ const MapGen = () => {
         context.putImageData(imageData, 0, 0);
         heightmapContext.putImageData(heightmapImageData, 0, 0);
         thirdMapContext.putImageData(thirdMapImageData, 0, 0);
-    }, [noiseGenerator, noiseType, scale, sharpness, landThreshold, detailScale, detailIntensity, elevationLines, waterFalloff, waterIntensity, waterColor, landColor, minElevationIntensity]);
+    }, [noiseGenerator, noiseType, scale, sharpness, landThreshold, detailScale, detailIntensity, elevationLines, waterFalloff, waterIntensity, waterColor, landColor, minElevationIntensity, falloffStrength, edgesAsWater, edgeWidth, edgeHeight, colorRangeScaling, waterColorRangeScaling]);
     
 
     const hexToRgb = (hex) => {
@@ -257,22 +345,107 @@ const MapGen = () => {
                 <canvas ref={thirdMapCanvasRef}  width="600" height="300" className="canvas-overlay thirdmap" />
             </div>
             <div className="control-panel">
-                <label>
-                    Noise Type:
-                    <select value={noiseType} onChange={e => setNoiseType(e.target.value)}>
-                        <option value="normal">Normal</option>
-                        <option value="ridged">Ridged</option>
-                        <option value="warped">Warped</option>
-                        <option value="fractal">Fractal</option>
-                    </select>
-                </label>
-                <label>Contours: <input type="checkbox" checked={elevationLines} onChange={(e) => setElevationLines(e.target.checked)} /></label>
-                <br></br>
-                <label>Seed: <input type="range" min="0" max="100" value={seed} onChange={(e) => setSeed(parseInt(e.target.value))} /></label>
-                <label>Scale: <input type="range" min="0.001" max="0.02" step="0.0001" value={scale} onChange={(e) => setScale(parseFloat(e.target.value))} /></label>
-                <br></br>
-                <label>Detail: <input type="range" min="0" max="0.5" step="0.01" value={detailIntensity} onChange={(e) => setDetailIntensity(parseFloat(e.target.value))} /></label>
-                <label>Elevation: <input type="range" min="0" max="7" step="0.1" value={sharpness} onChange={(e) => setSharpness(parseFloat(e.target.value))} /></label>
+
+                <ButtonGroup variant="contained" aria-label="outlined primary button group">
+                    <Button onClick={() => setActiveControlSet('landGeneration')}>Terrain</Button>
+                    <Button onClick={() => setActiveControlSet('landEdges')}>Edges</Button>
+                    <Button onClick={() => setActiveControlSet('landColors')}>Colors</Button>
+                    <Button onClick={() => setActiveControlSet('landDetails')}>Details</Button>
+                </ButtonGroup>
+
+                {activeControlSet === 'landGeneration' && (
+                    <div className="land-generation">
+                        <label>
+                            Noise Type:
+                            <select value={noiseType} onChange={e => setNoiseType(e.target.value)}>
+                                <option value="fractal">Fractal</option>
+                                <option value="normal">Simple</option>
+                                <option value="ridged">Ridged</option>
+                                <option value="warped">Warped</option>
+                            </select>
+                        </label>
+                        <br></br>
+                        <label>Seed: <input type="range" min="0" max="100" value={seed} onChange={(e) => setSeed(parseInt(e.target.value))} /></label>
+                        <label>Scale: <input type="range" min="0.001" max="0.02" step="0.0001" value={scale} onChange={(e) => setScale(parseFloat(e.target.value))} /></label>
+                        <br></br>
+                        <label>Detail: <input type="range" min="0" max="0.5" step="0.01" value={detailIntensity} onChange={(e) => setDetailIntensity(parseFloat(e.target.value))} /></label>
+                        <label>Elevation: <input type="range" min="0" max="7" step="0.1" value={sharpness} onChange={(e) => setSharpness(parseFloat(e.target.value))} /></label>
+                    </div>
+                )}
+
+                {activeControlSet === 'landEdges' && (
+                    <div className="land-edges">
+                        <label>Edges as Water: <input type="checkbox" checked={edgesAsWater} onChange={(e) => setEdgesAsWater(e.target.checked)} />
+                            <label>
+                                Edge Width: 
+                                <input 
+                                    type="range" 
+                                    min="1" 
+                                    max="200" 
+                                    value={edgeWidth} 
+                                    onChange={(e) => setEdgeWidth(parseInt(e.target.value))} 
+                                />
+                            </label>
+                            <label>
+                                Edge Height: 
+                                <input 
+                                    type="range" 
+                                    min="1" 
+                                    max="200" 
+                                    value={edgeHeight} 
+                                    onChange={(e) => setEdgeHeight(parseInt(e.target.value))} 
+                                />
+                            </label>
+                        </label>
+                        <label>
+                            Falloff Strength: 
+                            <input 
+                                type="range" 
+                                min="0.1" 
+                                max="5" 
+                                step="0.1" 
+                                value={falloffStrength} 
+                                onChange={(e) => setFalloffStrength(parseFloat(e.target.value))} 
+                            />
+                        </label>
+                    </div>
+                )}
+
+                {activeControlSet === 'landColors' && (
+                    <div className="land-colors">
+                        <label>
+                            Color Range Scaling: 
+                            <input 
+                                type="range" 
+                                min="0.1" 
+                                max="5" 
+                                step="0.1" 
+                                value={colorRangeScaling} 
+                                onChange={(e) => setColorRangeScaling(parseFloat(e.target.value))}
+                            />
+                        </label>
+                        <div>Current Scaling: {colorRangeScaling}</div>
+                        <label>
+                            Water Color Range Scaling: 
+                            <input 
+                                type="range" 
+                                min="0.1" 
+                                max="5" 
+                                step="0.1" 
+                                value={waterColorRangeScaling} 
+                                onChange={(e) => setWaterColorRangeScaling(parseFloat(e.target.value))}
+                            />
+                        </label>
+                        <div>Current Water Scaling: {waterColorRangeScaling}</div>
+                        <label>Contours: <input type="checkbox" checked={elevationLines} onChange={(e) => setElevationLines(e.target.checked)} /></label>
+                    </div>
+                )} 
+                {activeControlSet === 'landDetails' && (
+                    <div className="land-details">
+
+
+                    </div>
+                )} 
             </div>
         </div>
     );
