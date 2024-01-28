@@ -50,15 +50,11 @@
 
 WorldGen is an open-source desktop application powered by React and Electron. WorldGen allows writers and creators to easily create and keep track of their worlds’ lore, with additional tools to help create names, backstories, maps, and more.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 ### Built With
 
 * [![React][React.js]][React-url]
 * [![Electron][Electron.js]][Electron-url]
 * [![sqlite][sqlite]][sqlite-url]
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -172,8 +168,6 @@ npm run electron
 
 ### Done ✓
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 <!-- CONTRIBUTING -->
 ## Contributing
 
@@ -188,8 +182,6 @@ Don't forget to give the project a star! Thanks again!
 4. Push to the Branch
 5. Open a Pull Request
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 <!-- CONTACT -->
 ## Contact
 
@@ -197,15 +189,11 @@ Sree Gajula  - realpopnerd@gmail.com - [popnerd.studio](popnerd.studio)
 Project Link: [https://github.com/popnerdstudios/WorldGen
 ](https://github.com/popnerdstudios/WorldGen)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
 * [Best-README-Template](https://github.com/othneildrew/Best-README-Template)
 * [React Icons](https://react-icons.github.io/react-icons/search)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
