@@ -1,56 +1,13 @@
 <!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://github.com/popnerdstudios/WorldGen">
-    <img src="https://github.com/popnerdstudios/WorldGen/blob/main/demo/temp_logo.png?raw=true" alt="Logo" width="80" height="80">
-  </a>
-
-  <h3 align="center">WorldGen</h3>
-  <p align="center">
-    Jumpstart your Worldbuilding!
-    <br />
-    <a href="https://github.com/popnerdstudios/WorldGen"><strong>Explore the docs »</strong></a>
-    <br />
-  </p>
-</div>
-
-
-
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
-
+ ![logo](https://github.com/popnerdstudios/WorldGen/blob/main/demo/temp_logo.png?raw=true)
+ # WorldGen
+ Kickstart your Worldbuilding.
 
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-
-| ![Homepage](https://github.com/popnerdstudios/WorldGen/blob/main/demo/home.png?raw=true) | ![enter image description here](https://github.com/popnerdstudios/WorldGen/blob/main/demo/map.PNG?raw=true) |
-|--|--|
-
+ 
 WorldGen is an open-source desktop application powered by React and Electron. WorldGen allows writers and creators to easily create and keep track of their worlds’ lore, with additional tools to help create names, backstories, maps, and more.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
 
@@ -58,7 +15,6 @@ WorldGen is an open-source desktop application powered by React and Electron. Wo
 * [![Electron][Electron.js]][Electron-url]
 * [![sqlite][sqlite]][sqlite-url]
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -66,7 +22,7 @@ WorldGen is an open-source desktop application powered by React and Electron. Wo
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-
+* npm
   ```sh
   npm install npm@latest -g
   ```
@@ -184,8 +140,6 @@ npm run electron
 
 ### Done ✓
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 <!-- CONTRIBUTING -->
 ## Contributing
 
@@ -200,7 +154,6 @@ Don't forget to give the project a star! Thanks again!
 4. Push to the Branch
 5. Open a Pull Request
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTACT -->
 ## Contact
@@ -209,15 +162,12 @@ Sree Gajula  - realpopnerd@gmail.com - [popnerd.studio](popnerd.studio)
 Project Link: [https://github.com/popnerdstudios/WorldGen
 ](https://github.com/popnerdstudios/WorldGen)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
 * [Best-README-Template](https://github.com/othneildrew/Best-README-Template)
 * [React Icons](https://react-icons.github.io/react-icons/search)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 

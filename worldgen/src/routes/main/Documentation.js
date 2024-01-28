@@ -7,7 +7,7 @@ function Documentation() {
   const [markdown, setMarkdown] = useState('');
 
   useEffect(() => {
-    fs.readFile('../../Worldgen/README.md', 'utf8', (err, data) => {
+    fs.readFile('../../Worldgen/README_NOHTML.md', 'utf8', (err, data) => {
         if (err) {
         console.error('Error reading README file:', err);
         return;
