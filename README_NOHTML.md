@@ -1,10 +1,7 @@
-<!-- PROJECT LOGO -->
- ![logo](https://github.com/popnerdstudios/WorldGen/blob/main/demo/temp_logo.png?raw=true)
- # WorldGen
- Kickstart your Worldbuilding.
+# WorldGen
+Kickstart your Worldbuilding.
 
 
-<!-- ABOUT THE PROJECT -->
 ## About The Project
  
 WorldGen is an open-source desktop application powered by React and Electron. WorldGen allows writers and creators to easily create and keep track of their worlds’ lore, with additional tools to help create names, backstories, maps, and more.
@@ -16,7 +13,6 @@ WorldGen is an open-source desktop application powered by React and Electron. Wo
 * [![sqlite][sqlite]][sqlite-url]
 
 
-<!-- GETTING STARTED -->
 ## Getting Started
 
 ### Prerequisites
@@ -113,7 +109,6 @@ npm run electron
 
 ```
 
-<!-- ROADMAP -->
 ## Roadmap
 
 
@@ -140,7 +135,6 @@ npm run electron
 
 ### Done ✓
 
-<!-- CONTRIBUTING -->
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -155,7 +149,6 @@ Don't forget to give the project a star! Thanks again!
 5. Open a Pull Request
 
 
-<!-- CONTACT -->
 ## Contact
 
 Sree Gajula  - realpopnerd@gmail.com - [popnerd.studio](popnerd.studio)
@@ -163,7 +156,6 @@ Project Link: [https://github.com/popnerdstudios/WorldGen
 ](https://github.com/popnerdstudios/WorldGen)
 
 
-<!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
 * [Best-README-Template](https://github.com/othneildrew/Best-README-Template)
@@ -171,8 +163,6 @@ Project Link: [https://github.com/popnerdstudios/WorldGen
 
 
 
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
 [contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
