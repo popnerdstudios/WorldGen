@@ -157,7 +157,8 @@ class WorleyNoise {
 const MapGen = () => {
     const canvasRef = useRef(null);
     const heightmapCanvasRef = useRef(null); 
-    const thirdMapCanvasRef = useRef(null); // Ref for the third map
+    const thirdMapCanvasRef = useRef(null); 
+    const fourthMapCanvasRef = useRef(null); 
 
     const [noiseGenerator, setNoiseGenerator] = useState(new PerlinNoise(0));
     const [noiseType, setNoiseType] = useState('fractal'); 
@@ -178,6 +179,7 @@ const MapGen = () => {
     const [colorRangeScaling, setColorRangeScaling] = useState(3); // Default value of 1
     const [waterColorRangeScaling, setWaterColorRangeScaling] = useState(1); // Default value of 1
     const [activeControlSet, setActiveControlSet] = useState('landGeneration'); // Default to 'landGeneration'
+    const [fourthSeed, setFourthSeed] = useState(1); // Use a different initial seed value
 
 
     const [landColor, setLandColor] = useState("#24c224");
@@ -194,15 +196,20 @@ const MapGen = () => {
         const canvas = canvasRef.current;
         const heightmapCanvas = heightmapCanvasRef.current; 
         const thirdMapCanvas = thirdMapCanvasRef.current;
+        const fourthMapCanvas = fourthMapCanvasRef.current;
     
         const context = canvas.getContext('2d');
         const heightmapContext = heightmapCanvas.getContext('2d'); 
         const thirdMapContext = thirdMapCanvas.getContext('2d');
+        const fourthMapContext = fourthMapCanvas.getContext('2d');
     
         const imageData = context.createImageData(canvas.width, canvas.height);
         const heightmapImageData = heightmapContext.createImageData(heightmapCanvas.width, heightmapCanvas.height);
         const thirdMapImageData = thirdMapContext.createImageData(thirdMapCanvas.width, thirdMapCanvas.height);
-    
+        const fourthMapImageData = fourthMapContext.createImageData(fourthMapCanvas.width, fourthMapCanvas.height);
+
+        const fourthNoiseGenerator = new PerlinNoise(fourthSeed);
+
         for (let x = 0; x < canvas.width; x++) {
             for (let y = 0; y < canvas.height; y++) {
                 let baseNoise, detailNoise;
@@ -320,12 +327,29 @@ const MapGen = () => {
                 thirdMapImageData.data[index + 1] = thirdMapColorValue;
                 thirdMapImageData.data[index + 2] = thirdMapColorValue;
                 thirdMapImageData.data[index + 3] = 255; // Alpha (opaque)
+
+                // Use higher frequency noise for more jaggedness
+                const highFrequencyScale = 0.1; // Adjust this value to control jaggedness
+                const fourthMapNoiseValue = fourthNoiseGenerator.noise(x * highFrequencyScale, y * highFrequencyScale, 0);
+
+                // Threshold to create sharp divisions
+                const threshold = 0.5; // Adjust this value to control the density of the lines
+                const isBorder = fourthMapNoiseValue > threshold;
+
+                const fourthMapColorValue = isBorder ? 0 : 255; // Black for borders, white otherwise
+
+                const fourthMapIndex = (y * fourthMapCanvas.width + x) * 4;
+                fourthMapImageData.data[fourthMapIndex + 0] = fourthMapColorValue;
+                fourthMapImageData.data[fourthMapIndex + 1] = fourthMapColorValue;
+                fourthMapImageData.data[fourthMapIndex + 2] = fourthMapColorValue;
+                fourthMapImageData.data[fourthMapIndex + 3] = 255; // Opaque
             }
         }
         context.putImageData(imageData, 0, 0);
         heightmapContext.putImageData(heightmapImageData, 0, 0);
         thirdMapContext.putImageData(thirdMapImageData, 0, 0);
-    }, [noiseGenerator, noiseType, scale, sharpness, landThreshold, detailScale, detailIntensity, elevationLines, waterFalloff, waterIntensity, waterColor, landColor, minElevationIntensity, falloffStrength, edgesAsWater, edgeWidth, edgeHeight, colorRangeScaling, waterColorRangeScaling]);
+        fourthMapContext.putImageData(fourthMapImageData, 0, 0);
+    }, [noiseGenerator, noiseType, scale, sharpness, landThreshold, detailScale, detailIntensity, elevationLines, waterFalloff, waterIntensity, waterColor, landColor, minElevationIntensity, falloffStrength, edgesAsWater, edgeWidth, edgeHeight, colorRangeScaling, waterColorRangeScaling, fourthSeed]);
     
 
     const hexToRgb = (hex) => {
@@ -343,10 +367,11 @@ const MapGen = () => {
                 <canvas ref={canvasRef}  width="600" height="300" className="canvas-main" />
                 <canvas ref={heightmapCanvasRef}  width="600" height="300" className="canvas-overlay heightmap" />
                 <canvas ref={thirdMapCanvasRef}  width="600" height="300" className="canvas-overlay thirdmap" />
+                <canvas ref={fourthMapCanvasRef} width="600" height="300" className="canvas-overlay fourthmap" />
             </div>
             <div className="control-panel">
 
-                <ButtonGroup variant="contained" aria-label="outlined primary button group">
+                <ButtonGroup className="land-buttons" variant="contained" aria-label="outlined primary button group">
                     <Button onClick={() => setActiveControlSet('landGeneration')}>Terrain</Button>
                     <Button onClick={() => setActiveControlSet('landEdges')}>Edges</Button>
                     <Button onClick={() => setActiveControlSet('landColors')}>Colors</Button>
@@ -355,7 +380,7 @@ const MapGen = () => {
 
                 {activeControlSet === 'landGeneration' && (
                     <div className="land-generation">
-                        <label>
+                        <label className="noise-type">
                             Noise Type:
                             <select value={noiseType} onChange={e => setNoiseType(e.target.value)}>
                                 <option value="fractal">Fractal</option>
@@ -442,8 +467,7 @@ const MapGen = () => {
                 )} 
                 {activeControlSet === 'landDetails' && (
                     <div className="land-details">
-
-
+                        <label>Fourth Seed: <input type="range" min="0" max="100" value={fourthSeed} onChange={(e) => setFourthSeed(parseInt(e.target.value))} /></label>
                     </div>
                 )} 
             </div>

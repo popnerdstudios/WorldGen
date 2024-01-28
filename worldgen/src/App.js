@@ -13,7 +13,7 @@ import Documentation from './routes/main/Documentation';
 import CreateWorld from './routes/menu/CreateWorld'; 
 import EditWorld from './routes/menu/EditWorld'; 
 
-import MapGen from './routes/tools/MapGen'; 
+import MapGen from './routes/tools/MapGen/MapGen'; 
 
 const ipcRenderer = window.require("electron").ipcRenderer;
 

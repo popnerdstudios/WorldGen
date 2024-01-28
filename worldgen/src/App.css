@@ -710,9 +710,32 @@ body {
   left: 120px;
 }
 
+.fourthmap {
+  left: 240px;
+  display: none;
+}
+
 .control-panel {
   padding-top: 20px;
   padding-bottom: 20px;
   width: 600px;
   background-color: var(--secondary-highlight);
+}
+
+.control-panel Button{
+  background-color: var(--secondary-highlight);
+  font-size: 10px;
+  color: var(--tertiary-higlight);
+  font-weight: 700;
+  border-color: var(--secondary-color) !important;
+}
+
+.land-buttons{
+  height: 25px;
+  width: 300px;
+  margin-bottom: 20px;
+}
+
+.noise-type{
+  margin-bottom: 10px;
 }
