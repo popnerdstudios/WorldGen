@@ -1,10 +1,6 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/popnerdstudios/WorldGen">
-    <img src="https://github.com/popnerdstudios/WorldGen/blob/main/demo/temp_logo.png?raw=true" alt="Logo" width="80" height="80">
-  </a>
-
   <h3 align="center">WorldGen</h3>
   <p align="center">
     Jumpstart your Worldbuilding!
