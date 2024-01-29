@@ -5,6 +5,9 @@ import JSZip from 'jszip';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 
+const ipcRenderer = window.require("electron").ipcRenderer;
+
+
 class PerlinNoise {
     constructor(seed) {
         this.seed = seed;
@@ -180,7 +183,7 @@ const MapGen = () => {
             mainCanvas,
             heightmapCanvas,
             thirdMapCanvas,
-            folderPath: './temp' 
+            folderPath: './public/temp/' 
         });
 
     };
@@ -442,9 +445,10 @@ const MapGen = () => {
                 )} 
             </div>
             <div className="map-options">
-                <button class="cancel-button" id="map-cancel">Cancel</button>
+                <Link to="/tools" style={{ textDecoration: 'none' }}>
+                    <button class="cancel-button" id="map-cancel">Cancel</button>
+                </Link>
                 <button class="create-button" id="map-download" onClick={handleDownload}>Download</button>
-                <button class="create-button" id="map-next" onClick={handleNext}>Next</button>
                 <Link to="/3d-map" style={{ textDecoration: 'none' }} onClick={handleNext}>
                     <button class="create-button" id="map-next">Next</button>
                 </Link>
