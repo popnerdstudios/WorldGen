@@ -1,7 +1,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <h3 align="center">WorldGen</h3>
+  <h2 align="center">WorldGen</h2>
   <p align="center">
     Jumpstart your Worldbuilding!
     <br />
