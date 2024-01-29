@@ -44,7 +44,7 @@
 | ![Homepage](https://github.com/popnerdstudios/WorldGen/blob/main/demo/home.png?raw=true) | ![enter image description here](https://github.com/popnerdstudios/WorldGen/blob/main/demo/map.PNG?raw=true) |
 |--|--|
 
-WorldGen is an open-source desktop application powered by React and Electron. WorldGen allows writers and creators to easily create and keep track of their worlds’ lore, with additional tools to help create names, backstories, maps, and more.
+WorldGen is an open-source desktop application powered by React and Electron. WorldGen allows writers and creators to easily create a wiki to keep track of their worlds’ lore, with additional tools to help create names, backstories, maps, and more.
 
 ### Built With
 
