@@ -1,5 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const knex = require('knex')(require('./knexfile').development);
+const fs = require('fs');
+const path = require('path');
 
 let mainWindow;
 app.on("ready", ()=>{
@@ -77,6 +79,24 @@ ipcMain.on('delete-world', async (event, worldId) => {
     } catch (error) {
         event.reply('delete-world-response', { status: 'error', message: error.message });
     }
+});
+
+
+ipcMain.on('save-canvas-images', (event, data) => {
+    const { mainCanvas, heightmapCanvas, thirdMapCanvas, folderPath } = data;
+
+    if (!fs.existsSync(folderPath)){
+        fs.mkdirSync(folderPath, { recursive: true });
+    }
+
+    const saveImage = (base64Data, filename) => {
+        const buffer = Buffer.from(base64Data.split(',')[1], 'base64');
+        fs.writeFileSync(path.join(folderPath, filename), buffer);
+    };
+
+    saveImage(mainCanvas, 'main-map.png');
+    saveImage(heightmapCanvas, 'heightmap.png');
+    saveImage(thirdMapCanvas, 'third-map.png');
 });
 
 

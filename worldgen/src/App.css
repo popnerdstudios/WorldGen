@@ -739,3 +739,19 @@ body {
 .noise-type{
   margin-bottom: 10px;
 }
+
+.map-options{
+  margin-top: 15px;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: row;
+  width: 600px;
+}
+
+.map-button{
+  margin: 5px;
+  border: hidden;
+  width: 90px;
+  height: 25px;
+}
+

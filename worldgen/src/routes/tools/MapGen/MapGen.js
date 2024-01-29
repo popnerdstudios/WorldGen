@@ -1,4 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import JSZip from 'jszip';
+
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 
@@ -108,57 +111,13 @@ class PerlinNoise {
     
 }
 
-class WorleyNoise {
-    constructor(seed, gridResolution = 10) {
-        this.seed = seed;
-        this.gridResolution = gridResolution;
-        this.random = this.seededRandom(seed);
-    }
 
-    seededRandom(seed) {
-        const mask = 0xffffffff;
-        let m_w = (123456789 + seed) & mask;
-        let m_z = (987654321 - seed) & mask;
-
-        return function() {
-            m_z = (36969 * (m_z & 65535) + (m_z >> 16)) & mask;
-            m_w = (18000 * (m_w & 65535) + (m_w >> 16)) & mask;
-
-            let result = ((m_z << 16) + m_w) & mask;
-            result /= 4294967296;
-            return result + 0.5;
-        };
-    }
-
-    noise(x, y, z) {
-        let minDist = Infinity;
-        const cellX = Math.floor(x / this.gridResolution);
-        const cellY = Math.floor(y / this.gridResolution);
-        const cellZ = Math.floor(z / this.gridResolution);
-
-        for (let dx = -1; dx <= 1; dx++) {
-            for (let dy = -1; dy <= 1; dy++) {
-                for (let dz = -1; dz <= 1; dz++) {
-                    const seed = this.seed + cellX + dx + (cellY + dy) * 997 + (cellZ + dz) * 991;
-                    const pointX = (cellX + dx) * this.gridResolution + this.random(seed) * this.gridResolution;
-                    const pointY = (cellY + dy) * this.gridResolution + this.random(seed + 1) * this.gridResolution;
-                    const pointZ = (cellZ + dz) * this.gridResolution + this.random(seed + 2) * this.gridResolution;
-                    const dist = Math.sqrt((x - pointX) ** 2 + (y - pointY) ** 2 + (z - pointZ) ** 2);
-                    minDist = Math.min(minDist, dist);
-                }
-            }
-        }
-
-        return minDist;
-    }
-}
 
 
 const MapGen = () => {
     const canvasRef = useRef(null);
     const heightmapCanvasRef = useRef(null); 
     const thirdMapCanvasRef = useRef(null); 
-    const fourthMapCanvasRef = useRef(null); 
 
     const [noiseGenerator, setNoiseGenerator] = useState(new PerlinNoise(0));
     const [noiseType, setNoiseType] = useState('fractal'); 
@@ -179,15 +138,53 @@ const MapGen = () => {
     const [colorRangeScaling, setColorRangeScaling] = useState(3); // Default value of 1
     const [waterColorRangeScaling, setWaterColorRangeScaling] = useState(1); // Default value of 1
     const [activeControlSet, setActiveControlSet] = useState('landGeneration'); // Default to 'landGeneration'
-    const [fourthSeed, setFourthSeed] = useState(1); // Use a different initial seed value
-
 
     const [landColor, setLandColor] = useState("#24c224");
     const [waterColor, setWaterColor] = useState("#0062ff");
     const elevationColors = ['#A1D68B', '#89C079', '#71AA68', '#598455', '#416042']; // Example colors
     const [waterColors, setWaterColors] = useState(['#66B2FF', '#3399FF', '#0080FF', '#0066CC', '#004C99']); // Example colors
 
+    const downloadCanvasAsPng = (canvas, filename) => {
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    };
+    
+    const handleDownload = () => {
+        const zip = new JSZip();
+        const mainCanvas = canvasRef.current;
+        const heightmapCanvas = heightmapCanvasRef.current;
+        const thirdMapCanvas = thirdMapCanvasRef.current;
+    
+        if (mainCanvas && heightmapCanvas && thirdMapCanvas) {
+            zip.file('main-map.png', mainCanvas.toDataURL('image/png').split(',')[1], {base64: true});
+            zip.file('heightmap.png', heightmapCanvas.toDataURL('image/png').split(',')[1], {base64: true});
+            zip.file('third-map.png', thirdMapCanvas.toDataURL('image/png').split(',')[1], {base64: true});
+    
+            zip.generateAsync({type: 'blob'}).then(function(content) {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(content);
+                link.download = 'worldgen-map.zip';
+                link.click();
+            });
+        }
+    };
 
+    const handleNext = () => {
+        const mainCanvas = canvasRef.current.toDataURL('image/png');
+        const heightmapCanvas = heightmapCanvasRef.current.toDataURL('image/png');
+        const thirdMapCanvas = thirdMapCanvasRef.current.toDataURL('image/png');
+    
+        ipcRenderer.send('save-canvas-images', {
+            mainCanvas,
+            heightmapCanvas,
+            thirdMapCanvas,
+            folderPath: './temp' 
+        });
+
+    };
+    
     useEffect(() => {
         setNoiseGenerator(new PerlinNoise(seed));
     }, [seed]);
@@ -196,19 +193,15 @@ const MapGen = () => {
         const canvas = canvasRef.current;
         const heightmapCanvas = heightmapCanvasRef.current; 
         const thirdMapCanvas = thirdMapCanvasRef.current;
-        const fourthMapCanvas = fourthMapCanvasRef.current;
     
         const context = canvas.getContext('2d');
         const heightmapContext = heightmapCanvas.getContext('2d'); 
         const thirdMapContext = thirdMapCanvas.getContext('2d');
-        const fourthMapContext = fourthMapCanvas.getContext('2d');
     
         const imageData = context.createImageData(canvas.width, canvas.height);
         const heightmapImageData = heightmapContext.createImageData(heightmapCanvas.width, heightmapCanvas.height);
         const thirdMapImageData = thirdMapContext.createImageData(thirdMapCanvas.width, thirdMapCanvas.height);
-        const fourthMapImageData = fourthMapContext.createImageData(fourthMapCanvas.width, fourthMapCanvas.height);
 
-        const fourthNoiseGenerator = new PerlinNoise(fourthSeed);
 
         for (let x = 0; x < canvas.width; x++) {
             for (let y = 0; y < canvas.height; y++) {
@@ -327,29 +320,12 @@ const MapGen = () => {
                 thirdMapImageData.data[index + 1] = thirdMapColorValue;
                 thirdMapImageData.data[index + 2] = thirdMapColorValue;
                 thirdMapImageData.data[index + 3] = 255; // Alpha (opaque)
-
-                // Use higher frequency noise for more jaggedness
-                const highFrequencyScale = 0.1; // Adjust this value to control jaggedness
-                const fourthMapNoiseValue = fourthNoiseGenerator.noise(x * highFrequencyScale, y * highFrequencyScale, 0);
-
-                // Threshold to create sharp divisions
-                const threshold = 0.5; // Adjust this value to control the density of the lines
-                const isBorder = fourthMapNoiseValue > threshold;
-
-                const fourthMapColorValue = isBorder ? 0 : 255; // Black for borders, white otherwise
-
-                const fourthMapIndex = (y * fourthMapCanvas.width + x) * 4;
-                fourthMapImageData.data[fourthMapIndex + 0] = fourthMapColorValue;
-                fourthMapImageData.data[fourthMapIndex + 1] = fourthMapColorValue;
-                fourthMapImageData.data[fourthMapIndex + 2] = fourthMapColorValue;
-                fourthMapImageData.data[fourthMapIndex + 3] = 255; // Opaque
             }
         }
         context.putImageData(imageData, 0, 0);
         heightmapContext.putImageData(heightmapImageData, 0, 0);
         thirdMapContext.putImageData(thirdMapImageData, 0, 0);
-        fourthMapContext.putImageData(fourthMapImageData, 0, 0);
-    }, [noiseGenerator, noiseType, scale, sharpness, landThreshold, detailScale, detailIntensity, elevationLines, waterFalloff, waterIntensity, waterColor, landColor, minElevationIntensity, falloffStrength, edgesAsWater, edgeWidth, edgeHeight, colorRangeScaling, waterColorRangeScaling, fourthSeed]);
+    }, [noiseGenerator, noiseType, scale, sharpness, landThreshold, detailScale, detailIntensity, elevationLines, waterFalloff, waterIntensity, waterColor, landColor, minElevationIntensity, falloffStrength, edgesAsWater, edgeWidth, edgeHeight, colorRangeScaling, waterColorRangeScaling]);
     
 
     const hexToRgb = (hex) => {
@@ -367,7 +343,6 @@ const MapGen = () => {
                 <canvas ref={canvasRef}  width="600" height="300" className="canvas-main" />
                 <canvas ref={heightmapCanvasRef}  width="600" height="300" className="canvas-overlay heightmap" />
                 <canvas ref={thirdMapCanvasRef}  width="600" height="300" className="canvas-overlay thirdmap" />
-                <canvas ref={fourthMapCanvasRef} width="600" height="300" className="canvas-overlay fourthmap" />
             </div>
             <div className="control-panel">
 
@@ -394,7 +369,7 @@ const MapGen = () => {
                         <label>Scale: <input type="range" min="0.001" max="0.02" step="0.0001" value={scale} onChange={(e) => setScale(parseFloat(e.target.value))} /></label>
                         <br></br>
                         <label>Detail: <input type="range" min="0" max="0.5" step="0.01" value={detailIntensity} onChange={(e) => setDetailIntensity(parseFloat(e.target.value))} /></label>
-                        <label>Elevation: <input type="range" min="0" max="7" step="0.1" value={sharpness} onChange={(e) => setSharpness(parseFloat(e.target.value))} /></label>
+                        <label>Land: <input type="range" min="0" max="7" step="0.1" value={sharpness} onChange={(e) => setSharpness(parseFloat(e.target.value))} /></label>
                     </div>
                 )}
 
@@ -465,11 +440,14 @@ const MapGen = () => {
                         <label>Contours: <input type="checkbox" checked={elevationLines} onChange={(e) => setElevationLines(e.target.checked)} /></label>
                     </div>
                 )} 
-                {activeControlSet === 'landDetails' && (
-                    <div className="land-details">
-                        <label>Fourth Seed: <input type="range" min="0" max="100" value={fourthSeed} onChange={(e) => setFourthSeed(parseInt(e.target.value))} /></label>
-                    </div>
-                )} 
+            </div>
+            <div className="map-options">
+                <button class="cancel-button" id="map-cancel">Cancel</button>
+                <button class="create-button" id="map-download" onClick={handleDownload}>Download</button>
+                <button class="create-button" id="map-next" onClick={handleNext}>Next</button>
+                <Link to="/3d-map" style={{ textDecoration: 'none' }} onClick={handleNext}>
+                    <button class="create-button" id="map-next">Next</button>
+                </Link>
             </div>
         </div>
     );

@@ -14,6 +14,8 @@ import CreateWorld from './routes/menu/CreateWorld';
 import EditWorld from './routes/menu/EditWorld'; 
 
 import MapGen from './routes/tools/MapGen/MapGen'; 
+import ThreeJSMap from './routes/tools/MapGen/3d-map'; 
+
 
 const ipcRenderer = window.require("electron").ipcRenderer;
 
@@ -61,6 +63,7 @@ function App() {
             <Route exact path="/templates" element={<Templates />}/>
             <Route exact path="/documentation" element={<Documentation />}/>
             <Route exact path="/mapgen" element={<MapGen />}/>
+            <Route exact path="/3d-map" element={<ThreeJSMap />}/>
           </Routes>
         </div>
       </div>
