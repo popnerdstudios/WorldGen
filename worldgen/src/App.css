@@ -759,5 +759,9 @@ body {
 .threejs-canvas{
   height: 400px;
   width: 400px;
-  transform: scale(3);
+}
+
+.threejs-canvas Canvas{
+  height: 400px;
+  width: 400px;
 }

@@ -29,7 +29,6 @@ const ThreeJSMap = () => {
     return (
         <div className="threejs-canvas">
             <Canvas>
-                <ambientLight />
                 <pointLight position={[10, 10, 10]} />
                 <SpinningSphere />
             </Canvas>

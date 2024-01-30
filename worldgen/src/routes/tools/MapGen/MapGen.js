@@ -142,17 +142,10 @@ const MapGen = () => {
     const [waterColorRangeScaling, setWaterColorRangeScaling] = useState(1); // Default value of 1
     const [activeControlSet, setActiveControlSet] = useState('landGeneration'); // Default to 'landGeneration'
 
-    const [landColor, setLandColor] = useState("#24c224");
-    const [waterColor, setWaterColor] = useState("#0062ff");
-    const elevationColors = ['#A1D68B', '#89C079', '#71AA68', '#598455', '#416042']; // Example colors
+    const [landColor, setLandColor] = useState("#A1D68B");
+    const [waterColor, setWaterColor] = useState("#66B2FF");
+    const [elevationColors, setElevationColors] = useState(['#A1D68B', '#89C079', '#71AA68', '#598455', '#416042']); // Example colors
     const [waterColors, setWaterColors] = useState(['#66B2FF', '#3399FF', '#0080FF', '#0066CC', '#004C99']); // Example colors
-
-    const downloadCanvasAsPng = (canvas, filename) => {
-        const link = document.createElement('a');
-        link.download = filename;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-    };
     
     const handleDownload = () => {
         const zip = new JSZip();
@@ -187,6 +180,61 @@ const MapGen = () => {
         });
 
     };
+
+    const hexToRgb = (hex) => {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        if (!result) {
+            console.warn(`Invalid hex color: ${hex}`);
+            return [0, 0, 0]; // Default to black or any other default color
+        }
+        return [
+            parseInt(result[1], 16),
+            parseInt(result[2], 16),
+            parseInt(result[3], 16)
+        ];
+    };
+    
+
+    const adjustColor = (color, adjustment) => {
+        return color.map((c, i) => Math.max(0, Math.min(255, c + adjustment[i])));
+    };
+
+    const generateElevationColors = (startColor) => {
+        const adjustments = [[-24, -22, -18], [-24, -22, -17], [-24, -38, -19], [-24, -36, -19]];
+        let colors = [startColor];
+        adjustments.forEach(adj => {
+            colors.push(adjustColor(colors[colors.length - 1], adj));
+        });
+        return colors;
+    };
+
+    const generateWaterColors = (startColor) => {
+        const adjustments = [[-51, -25, 0], [-51, -25, 0], [0, -26, -51], [0, -26, -51]];
+        let colors = [startColor];
+        adjustments.forEach(adj => {
+            colors.push(adjustColor(colors[colors.length - 1], adj));
+        });
+        return colors;
+    };
+
+    useEffect(() => {
+        const startElevationColor = hexToRgb(landColor); 
+        const startWaterColor = hexToRgb(waterColor);
+
+        setElevationColors(generateElevationColors(startElevationColor));
+        setWaterColors(generateWaterColors(startWaterColor));
+    }, [landColor, waterColor]);
+
+    // Event handlers for color pickers
+    const handleLandColorChange = (event) => {
+        setLandColor(event.target.value);
+    };
+
+    const handleWaterColorChange = (event) => {
+        setWaterColor(event.target.value);
+    };
+    
+    
     
     useEffect(() => {
         setNoiseGenerator(new PerlinNoise(seed));
@@ -270,7 +318,8 @@ const MapGen = () => {
                     let waterDepth = (landThreshold - noiseValue) / landThreshold; 
                     let waterColorIndex = Math.floor(waterDepth * waterColors.length * waterColorRangeScaling);
                     waterColorIndex = Math.min(waterColorIndex, waterColors.length - 1); 
-                    [r, g, b] = hexToRgb(waterColors[waterColorIndex]);
+                    [r, g, b] = waterColors[waterColorIndex];
+                    
     
                     thirdMapColorValue = 50;
                 } else {
@@ -282,11 +331,10 @@ const MapGen = () => {
                     elevationIntensity = 1 - elevationIntensity;
                     elevationIntensity = Math.max(elevationIntensity, minElevationIntensity); 
     
-                    let elevationIndex = Math.floor(
-                        ((noiseValue - landThreshold) / (1 - landThreshold)) * elevationColors.length * colorRangeScaling
-                    );
+                    let elevationIndex = Math.floor(((noiseValue - landThreshold) / (1 - landThreshold)) * elevationColors.length * colorRangeScaling);
                     elevationIndex = Math.min(elevationIndex, elevationColors.length - 1);
-                    [r, g, b] = hexToRgb(elevationColors[elevationIndex]);
+                    [r, g, b] = elevationColors[elevationIndex];
+                    
 
                     let elevationIndexForThirdMap = Math.floor(((noiseValue - landThreshold) / (1 - landThreshold)) * elevationColors.length);
                     elevationIndexForThirdMap = Math.min(elevationIndexForThirdMap, elevationColors.length - 1);
@@ -329,16 +377,6 @@ const MapGen = () => {
         heightmapContext.putImageData(heightmapImageData, 0, 0);
         thirdMapContext.putImageData(thirdMapImageData, 0, 0);
     }, [noiseGenerator, noiseType, scale, sharpness, landThreshold, detailScale, detailIntensity, elevationLines, waterFalloff, waterIntensity, waterColor, landColor, minElevationIntensity, falloffStrength, edgesAsWater, edgeWidth, edgeHeight, colorRangeScaling, waterColorRangeScaling]);
-    
-
-    const hexToRgb = (hex) => {
-        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? [
-            parseInt(result[1], 16),
-            parseInt(result[2], 16),
-            parseInt(result[3], 16)
-        ] : null;
-    };
 
     return (
         <div className="map-gen">
@@ -379,6 +417,7 @@ const MapGen = () => {
                 {activeControlSet === 'landEdges' && (
                     <div className="land-edges">
                         <label>Edges as Water: <input type="checkbox" checked={edgesAsWater} onChange={(e) => setEdgesAsWater(e.target.checked)} />
+                            <br></br>
                             <label>
                                 Edge Width: 
                                 <input 
@@ -416,8 +455,27 @@ const MapGen = () => {
 
                 {activeControlSet === 'landColors' && (
                     <div className="land-colors">
+                        <label>Contours: <input type="checkbox" checked={elevationLines} onChange={(e) => setElevationLines(e.target.checked)} /></label>
+                        <br></br>
                         <label>
-                            Color Range Scaling: 
+                            Land Color: 
+                            <input 
+                                type="color" 
+                                value={landColor} 
+                                onChange={handleLandColorChange} 
+                            />
+                        </label>
+
+                        <label>
+                            Water Color: 
+                            <input 
+                                type="color" 
+                                value={waterColor} 
+                                onChange={handleWaterColorChange} 
+                            />
+                        </label>
+                        <label>
+                            Terrain Color Intensity: 
                             <input 
                                 type="range" 
                                 min="0.1" 
@@ -427,9 +485,8 @@ const MapGen = () => {
                                 onChange={(e) => setColorRangeScaling(parseFloat(e.target.value))}
                             />
                         </label>
-                        <div>Current Scaling: {colorRangeScaling}</div>
                         <label>
-                            Water Color Range Scaling: 
+                            Water Color Intensity: 
                             <input 
                                 type="range" 
                                 min="0.1" 
@@ -439,8 +496,6 @@ const MapGen = () => {
                                 onChange={(e) => setWaterColorRangeScaling(parseFloat(e.target.value))}
                             />
                         </label>
-                        <div>Current Water Scaling: {waterColorRangeScaling}</div>
-                        <label>Contours: <input type="checkbox" checked={elevationLines} onChange={(e) => setElevationLines(e.target.checked)} /></label>
                     </div>
                 )} 
             </div>
