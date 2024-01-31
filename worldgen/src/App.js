@@ -4,6 +4,9 @@ import { FaRegUserCircle, FaGithub } from "react-icons/fa";
 import { VscChromeMinimize, VscChromeMaximize, VscChromeClose, VscWand } from "react-icons/vsc";
 
 import { HashRouter, Link, NavLink, Route, Routes } from 'react-router-dom';
+import React, { useEffect } from 'react';
+
+import themes from './themes.json';
 
 import HomeContent from './routes/main/HomeContent'; 
 import Tools from './routes/main/Tools'; 
@@ -22,6 +25,11 @@ import ThreeJSMap from './routes/tools/MapGen/3d-map';
 const ipcRenderer = window.require("electron").ipcRenderer;
 
 function App() {
+
+  useEffect(() => {
+    applyTheme('light-theme');
+  }, []);
+
   return (
     <HashRouter>
     <div className="App">
@@ -73,6 +81,19 @@ function App() {
     </div>
     </HashRouter>
   );
+}
+
+function applyTheme(themeName) {
+  const theme = themes[themeName];
+  if (theme) {
+    const root = document.documentElement;
+
+    Object.keys(theme).forEach(key => {
+      root.style.setProperty(`--${key}`, theme[key]);
+    });
+  } else {
+    console.error(`Theme ${themeName} not found`);
+  }
 }
 
 export default App;

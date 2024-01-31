@@ -35,9 +35,12 @@ const WorldContent = () => {
   }
   
   return (
-    <div>
-      <h1>{worldData?.name}</h1>
-      {/* Display other world details here */}
+    <div className="world-content">
+        <div className="world-img"></div>
+        <div className="world-elements">
+            <h1 className="world-name">{worldData?.name}</h1>
+            <h4 className="world-description">{worldData?.description}</h4>
+        </div>
     </div>
   );
 };

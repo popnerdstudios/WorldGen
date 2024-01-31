@@ -1,0 +1,27 @@
+{
+    "light-theme": {
+      "primary-color": "#f9f9f9",
+      "secondary-color": "#a4a4a4",
+      "tertiary-color": "#000000",
+      "primary-highlight": "#ffffff",
+      "secondary-highlight": "#eeeeee",
+      "tertiary-highlight": "#404040",
+      "tool-main-1": "#f05d5d",
+      "tool-highlight-1": "#f9d2d2",
+      "tool-main-2": "#5d60f0",
+      "tool-highlight-2": "#d8d2f9"
+    },
+    "dark-theme": {
+      "primary-color": "#0f0f0f",
+      "secondary-color": "#414141",
+      "tertiary-color": "#ffffff",
+      "primary-highlight": "#000000",
+      "secondary-highlight": "#0e0e0e",
+      "tertiary-highlight": "#f9f9f9",
+      "tool-main-1": "#f05d5d",
+      "tool-highlight-1": "#f9d2d2",
+      "tool-main-2": "#5d60f0",
+      "tool-highlight-2": "#d8d2f9"
+    }
+  }
+  
