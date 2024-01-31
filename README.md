@@ -3,7 +3,7 @@
 <div align="center">
   <h1 align="center">WorldGen</h1>
   <p align="center">
-    Jumpstart your Worldbuilding!
+    Manage Stories, Create Worlds.
     <br />
     <a href="https://github.com/popnerdstudios/WorldGen"><strong>Explore the docs »</strong></a>
     <br />

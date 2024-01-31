@@ -175,7 +175,9 @@ const HomeEmpty = () => {
                 </div>
                 {data.map((world) => (
                     <div key={world.id} className="project">
-                        <p className="project-name">{world.name}</p>
+                        <Link to={`/world/${world.id}`} className="project-name">
+                            {world.name}
+                        </Link>
                         <p className="project-size">{world.size}</p>
                         <p className="project-desc">{world.description}</p>
                         <div  className={`project-options project-button`} onClick={(e) => handleMenuOpen(e, world.id)}>

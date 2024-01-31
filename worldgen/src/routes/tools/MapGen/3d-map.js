@@ -20,7 +20,12 @@ function SpinningSphere() {
             onPointerOver={() => setHover(true)}
             onPointerOut={() => setHover(false)}>
             <sphereGeometry args={[1, 32, 32]} />
-            <meshStandardMaterial map={texture} />
+            <meshPhysicalMaterial 
+                map={texture}         
+                emissiveMap={texture}
+                emissive={texture}
+                emissiveIntensity={2}
+            />
         </mesh>
     );
 }
@@ -29,7 +34,8 @@ const ThreeJSMap = () => {
     return (
         <div className="threejs-canvas">
             <Canvas>
-                <pointLight position={[10, 10, 10]} />
+                <ambientLight />
+                <pointLight position={[1, 1, 1]} />
                 <SpinningSphere />
             </Canvas>
         </div>

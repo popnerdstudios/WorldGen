@@ -176,7 +176,7 @@ const MapGen = () => {
             mainCanvas,
             heightmapCanvas,
             thirdMapCanvas,
-            folderPath: './public/temp/' 
+            folderPath: './build/temp/' 
         });
 
     };
@@ -376,7 +376,7 @@ const MapGen = () => {
         context.putImageData(imageData, 0, 0);
         heightmapContext.putImageData(heightmapImageData, 0, 0);
         thirdMapContext.putImageData(thirdMapImageData, 0, 0);
-    }, [noiseGenerator, noiseType, scale, sharpness, landThreshold, detailScale, detailIntensity, elevationLines, waterFalloff, waterIntensity, waterColor, landColor, minElevationIntensity, falloffStrength, edgesAsWater, edgeWidth, edgeHeight, colorRangeScaling, waterColorRangeScaling]);
+    }, [noiseGenerator, noiseType, scale, sharpness, landThreshold, detailScale, detailIntensity, elevationLines, waterFalloff, waterIntensity, waterColor, landColor, minElevationIntensity, falloffStrength, edgesAsWater, edgeWidth, edgeHeight, colorRangeScaling, waterColorRangeScaling, landColor, waterColor]);
 
     return (
         <div className="map-gen">

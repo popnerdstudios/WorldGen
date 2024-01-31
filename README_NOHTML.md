@@ -1,5 +1,5 @@
 # WorldGen
-Kickstart your Worldbuilding.
+Manage Stories, Create Worlds.
 
 
 ## About The Project
@@ -33,9 +33,7 @@ This is an example of how to list things you need to use the software and how to
 First, clone the repository to your local machine. Open your terminal or command prompt and run:
 
 ```
-
 git clone https://github.com/popnerdstudios/WorldGen
-
 ```
 
 This command creates a folder named `WorldGen` containing the project files.
@@ -51,9 +49,7 @@ Change your current working directory to the `worldgen` folder:
   
 
 ```
-
 cd worldgen
-
 ```
 
   
@@ -67,9 +63,7 @@ Before running the package command, you need to install the project dependencies
   
 
 ```
-
 npm install
-
 ```
 
   
@@ -87,9 +81,7 @@ To build the React application, run:
   
 
 ```
-
 npm run build
-
 ```
 
   
@@ -104,9 +96,7 @@ To open the React application using Electron, run:
   
 
 ```
-
 npm run electron
-
 ```
 
 ## Roadmap

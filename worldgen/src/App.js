@@ -12,6 +12,8 @@ import Documentation from './routes/main/Documentation';
 
 import CreateWorld from './routes/menu/CreateWorld'; 
 import EditWorld from './routes/menu/EditWorld'; 
+import WorldContent from './routes/world/WorldContent'; 
+
 
 import MapGen from './routes/tools/MapGen/MapGen'; 
 import ThreeJSMap from './routes/tools/MapGen/3d-map'; 
@@ -59,6 +61,7 @@ function App() {
             <Route exact path="/" element={<HomeContent />}/>
             <Route exact path="/create-world" element={<CreateWorld />}/>
             <Route path="/edit-world/:id" element={<EditWorld />}/>
+            <Route path="/world/:id" element={<WorldContent/>} />
             <Route exact path="/tools" element={<Tools />}/>
             <Route exact path="/templates" element={<Templates />}/>
             <Route exact path="/documentation" element={<Documentation />}/>
