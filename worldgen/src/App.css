@@ -683,10 +683,14 @@ body {
 /* MapGen */
 
 .map-gen{
-  width: 80vw;
-  display: flex;
   align-items: center;
+  display: flex;
   flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  padding-right: 200px;
+  width: 100%;
+  padding-bottom: 100px;
 }
 
 .map-container {
@@ -719,8 +723,14 @@ body {
 .control-panel {
   padding-top: 20px;
   padding-bottom: 20px;
-  width: 600px;
   background-color: var(--secondary-highlight);
+  z-index: 999;
+
+  position: absolute;
+  height: 200px;
+  width: 310px;
+  right: 20px;
+  bottom: 80px;
 }
 
 .control-panel Button{
@@ -742,11 +752,14 @@ body {
 }
 
 .map-options{
-  margin-top: 15px;
   display: flex;
   justify-content: flex-end;
   flex-direction: row;
   width: 600px;
+
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
 }
 
 .map-button{

@@ -374,6 +374,13 @@ const MapGen = () => {
             }
         }
         context.putImageData(imageData, 0, 0);
+        const topLeftPixel = context.getImageData(0, 0, 1, 1).data;
+        const rgbaColor = `rgba(${topLeftPixel[0]}, ${topLeftPixel[1]}, ${topLeftPixel[2]}, ${topLeftPixel[3] / 255})`;
+
+        const mapGenDiv = document.querySelector('.map-gen');
+        if (mapGenDiv) {
+            mapGenDiv.style.backgroundColor = rgbaColor;
+        }
         heightmapContext.putImageData(heightmapImageData, 0, 0);
         thirdMapContext.putImageData(thirdMapImageData, 0, 0);
     }, [noiseGenerator, noiseType, scale, sharpness, landThreshold, detailScale, detailIntensity, elevationLines, waterFalloff, waterIntensity, waterColor, landColor, minElevationIntensity, falloffStrength, edgesAsWater, edgeWidth, edgeHeight, colorRangeScaling, waterColorRangeScaling, landColor, waterColor]);
@@ -381,7 +388,7 @@ const MapGen = () => {
     return (
         <div className="map-gen">
             <div className="map-container">
-                <canvas ref={canvasRef}  width="600" height="300" className="canvas-main" />
+                <canvas ref={canvasRef}  width="800" height="400" className="canvas-main" />
                 <canvas ref={heightmapCanvasRef}  width="600" height="300" className="canvas-overlay heightmap" />
                 <canvas ref={thirdMapCanvasRef}  width="600" height="300" className="canvas-overlay thirdmap" />
             </div>
