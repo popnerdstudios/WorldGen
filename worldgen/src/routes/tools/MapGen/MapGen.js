@@ -1,9 +1,14 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import JSZip from 'jszip';
+import Draggable from 'react-draggable'; 
 
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import { IoIosArrowUp } from "react-icons/io";
+import { MdOutlineFileDownload } from "react-icons/md";
+
 
 const ipcRenderer = window.require("electron").ipcRenderer;
 
@@ -125,22 +130,23 @@ const MapGen = () => {
     const [noiseGenerator, setNoiseGenerator] = useState(new PerlinNoise(0));
     const [noiseType, setNoiseType] = useState('fractal'); 
     const [seed, setSeed] = useState(0);
-    const [scale, setScale] = useState(0.01);
-    const [sharpness, setSharpness] = useState(5);
+    const [scale, setScale] = useState(0.003);
+    const [sharpness, setSharpness] = useState(4);
     const [landThreshold] = useState(0.1);
-    const [detailScale] = useState(0.05);
-    const [detailIntensity, setDetailIntensity] = useState(0.25);
+    const [detailScale] = useState(0.03);
+    const [detailIntensity, setDetailIntensity] = useState(0.15);
     const [elevationLines, setElevationLines] = useState(false);
     const [waterFalloff, setWaterFalloff] = useState(50); 
     const [waterIntensity, setWaterIntensity] = useState(500);
     const [minElevationIntensity, setMinElevationIntensity] = useState(0.9); 
     const [edgesAsWater, setEdgesAsWater] = useState(true);
-    const [edgeWidth, setEdgeWidth] = useState(60); // Default width of the water edge
-    const [edgeHeight, setEdgeHeight] = useState(60);
-    const [falloffStrength, setFalloffStrength] = useState(0.3); // Default falloff strength
+    const [edgeWidth, setEdgeWidth] = useState(135);
+    const [edgeHeight, setEdgeHeight] = useState(135);
+    const [falloffStrength, setFalloffStrength] = useState(0.4); // Default falloff strength
     const [colorRangeScaling, setColorRangeScaling] = useState(3); // Default value of 1
     const [waterColorRangeScaling, setWaterColorRangeScaling] = useState(1); // Default value of 1
     const [activeControlSet, setActiveControlSet] = useState('landGeneration'); // Default to 'landGeneration'
+    const [areControlsVisible, setAreControlsVisible] = useState(false);
 
     const [landColor, setLandColor] = useState("#A1D68B");
     const [waterColor, setWaterColor] = useState("#66B2FF");
@@ -185,7 +191,7 @@ const MapGen = () => {
         const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         if (!result) {
             console.warn(`Invalid hex color: ${hex}`);
-            return [0, 0, 0]; // Default to black or any other default color
+            return [0, 0, 0]; 
         }
         return [
             parseInt(result[1], 16),
@@ -245,7 +251,7 @@ const MapGen = () => {
         const heightmapCanvas = heightmapCanvasRef.current; 
         const thirdMapCanvas = thirdMapCanvasRef.current;
     
-        const context = canvas.getContext('2d');
+        const context = canvas.getContext('2d', { willReadFrequently: true });
         const heightmapContext = heightmapCanvas.getContext('2d'); 
         const thirdMapContext = thirdMapCanvas.getContext('2d');
     
@@ -387,134 +393,155 @@ const MapGen = () => {
 
     return (
         <div className="map-gen">
+        <TransformWrapper>
+            <TransformComponent>
             <div className="map-container">
-                <canvas ref={canvasRef}  width="800" height="400" className="canvas-main" />
-                <canvas ref={heightmapCanvasRef}  width="600" height="300" className="canvas-overlay heightmap" />
-                <canvas ref={thirdMapCanvasRef}  width="600" height="300" className="canvas-overlay thirdmap" />
+                <canvas ref={canvasRef}  width="2400" height="1200" className="canvas-main" />
+                <canvas ref={heightmapCanvasRef} width="2400" height="1200" className="canvas-overlay heightmap" />
+                <canvas ref={thirdMapCanvasRef}  width="2400" height="1200" className="canvas-overlay thirdmap" />
             </div>
+            </TransformComponent>
+            <Draggable >
             <div className="control-panel">
+                <div className={`controls ${areControlsVisible ? 'visible' : ''}`}>
 
-                <ButtonGroup className="land-buttons" variant="contained" aria-label="outlined primary button group">
-                    <Button onClick={() => setActiveControlSet('landGeneration')}>Terrain</Button>
-                    <Button onClick={() => setActiveControlSet('landEdges')}>Edges</Button>
-                    <Button onClick={() => setActiveControlSet('landColors')}>Colors</Button>
-                    <Button onClick={() => setActiveControlSet('landDetails')}>Details</Button>
-                </ButtonGroup>
+                    <ButtonGroup className="land-buttons" variant="contained" aria-label="outlined primary button group">
+                        <Button onClick={() => setActiveControlSet('landGeneration')}>Terrain</Button>
+                        <Button onClick={() => setActiveControlSet('landEdges')}>Edges</Button>
+                        <Button onClick={() => setActiveControlSet('landColors')}>Colors</Button>
+                        <Button onClick={() => setActiveControlSet('landDetails')}>Details</Button>
+                    </ButtonGroup>
 
-                {activeControlSet === 'landGeneration' && (
-                    <div className="land-generation">
-                        <label className="noise-type">
-                            Noise Type:
-                            <select value={noiseType} onChange={e => setNoiseType(e.target.value)}>
-                                <option value="fractal">Fractal</option>
-                                <option value="normal">Simple</option>
-                                <option value="ridged">Ridged</option>
-                                <option value="warped">Warped</option>
-                            </select>
-                        </label>
-                        <br></br>
-                        <label>Seed: <input type="range" min="0" max="100" value={seed} onChange={(e) => setSeed(parseInt(e.target.value))} /></label>
-                        <label>Scale: <input type="range" min="0.001" max="0.02" step="0.0001" value={scale} onChange={(e) => setScale(parseFloat(e.target.value))} /></label>
-                        <br></br>
-                        <label>Detail: <input type="range" min="0" max="0.5" step="0.01" value={detailIntensity} onChange={(e) => setDetailIntensity(parseFloat(e.target.value))} /></label>
-                        <label>Land: <input type="range" min="0" max="7" step="0.1" value={sharpness} onChange={(e) => setSharpness(parseFloat(e.target.value))} /></label>
-                    </div>
-                )}
+                    {activeControlSet === 'landGeneration' && (
+                        <div className="land-generation">
+                            <label className="noise-type">
+                                Noise Type:
+                                <select value={noiseType} onChange={e => setNoiseType(e.target.value)}>
+                                    <option value="fractal">Fractal</option>
+                                    <option value="normal">Simple</option>
+                                    <option value="ridged">Ridged</option>
+                                    <option value="warped">Warped</option>
+                                </select>
+                            </label>
+                            <br></br>
+                            <label>Seed: <input type="range" min="0" max="100" value={seed} onChange={(e) => setSeed(parseInt(e.target.value))} /></label>
+                            <br></br>
+                            <label>Scale: <input type="range" min="0.001" max="0.02" step="0.0001" value={scale} onChange={(e) => setScale(parseFloat(e.target.value))} /></label>
+                            <br></br>
+                            <label>Detail: <input type="range" min="0" max="0.5" step="0.01" value={detailIntensity} onChange={(e) => setDetailIntensity(parseFloat(e.target.value))} /></label>
+                            <br></br>
+                            <label>Land: <input type="range" min="0" max="7" step="0.1" value={sharpness} onChange={(e) => setSharpness(parseFloat(e.target.value))} /></label>
+                        </div>
+                    )}
 
-                {activeControlSet === 'landEdges' && (
-                    <div className="land-edges">
-                        <label>Edges as Water: <input type="checkbox" checked={edgesAsWater} onChange={(e) => setEdgesAsWater(e.target.checked)} />
+                    {activeControlSet === 'landEdges' && (
+                        <div className="land-edges">
+                            <label>Edges as Water: <input type="checkbox" checked={edgesAsWater} onChange={(e) => setEdgesAsWater(e.target.checked)} />
+                                <br></br>
+                                <label>
+                                    Edge Width: 
+                                    <input 
+                                        type="range" 
+                                        min="1" 
+                                        max="500" 
+                                        value={edgeWidth} 
+                                        onChange={(e) => setEdgeWidth(parseInt(e.target.value))} 
+                                    />
+                                </label>
+                                <br></br>
+                                <label>
+                                    Edge Height: 
+                                    <input 
+                                        type="range" 
+                                        min="1" 
+                                        max="500" 
+                                        value={edgeHeight} 
+                                        onChange={(e) => setEdgeHeight(parseInt(e.target.value))} 
+                                    />
+                                </label>
+                            </label>
                             <br></br>
                             <label>
-                                Edge Width: 
+                                Falloff Strength: 
                                 <input 
                                     type="range" 
-                                    min="1" 
-                                    max="200" 
-                                    value={edgeWidth} 
-                                    onChange={(e) => setEdgeWidth(parseInt(e.target.value))} 
+                                    min="0.1" 
+                                    max="5" 
+                                    step="0.01" 
+                                    value={falloffStrength} 
+                                    onChange={(e) => setFalloffStrength(parseFloat(e.target.value))} 
                                 />
                             </label>
+                        </div>
+                    )}
+
+                    {activeControlSet === 'landColors' && (
+                        <div className="land-colors">
+                            <label>Contours: <input type="checkbox" checked={elevationLines} onChange={(e) => setElevationLines(e.target.checked)} /></label>
+                            <br></br>
                             <label>
-                                Edge Height: 
+                                Land Color: 
                                 <input 
-                                    type="range" 
-                                    min="1" 
-                                    max="200" 
-                                    value={edgeHeight} 
-                                    onChange={(e) => setEdgeHeight(parseInt(e.target.value))} 
+                                    type="color" 
+                                    value={landColor} 
+                                    onChange={handleLandColorChange} 
                                 />
                             </label>
-                        </label>
-                        <label>
-                            Falloff Strength: 
-                            <input 
-                                type="range" 
-                                min="0.1" 
-                                max="5" 
-                                step="0.1" 
-                                value={falloffStrength} 
-                                onChange={(e) => setFalloffStrength(parseFloat(e.target.value))} 
-                            />
-                        </label>
-                    </div>
-                )}
-
-                {activeControlSet === 'landColors' && (
-                    <div className="land-colors">
-                        <label>Contours: <input type="checkbox" checked={elevationLines} onChange={(e) => setElevationLines(e.target.checked)} /></label>
-                        <br></br>
-                        <label>
-                            Land Color: 
-                            <input 
-                                type="color" 
-                                value={landColor} 
-                                onChange={handleLandColorChange} 
-                            />
-                        </label>
-
-                        <label>
-                            Water Color: 
-                            <input 
-                                type="color" 
-                                value={waterColor} 
-                                onChange={handleWaterColorChange} 
-                            />
-                        </label>
-                        <label>
-                            Terrain Color Intensity: 
-                            <input 
-                                type="range" 
-                                min="0.1" 
-                                max="5" 
-                                step="0.1" 
-                                value={colorRangeScaling} 
-                                onChange={(e) => setColorRangeScaling(parseFloat(e.target.value))}
-                            />
-                        </label>
-                        <label>
-                            Water Color Intensity: 
-                            <input 
-                                type="range" 
-                                min="0.1" 
-                                max="5" 
-                                step="0.1" 
-                                value={waterColorRangeScaling} 
-                                onChange={(e) => setWaterColorRangeScaling(parseFloat(e.target.value))}
-                            />
-                        </label>
-                    </div>
-                )} 
+                            <br></br>
+                            <label>
+                                Water Color: 
+                                <input 
+                                    type="color" 
+                                    value={waterColor} 
+                                    onChange={handleWaterColorChange} 
+                                />
+                            </label>
+                            <br></br>
+                            <label>
+                                Terrain Color Intensity: 
+                                <input 
+                                    type="range" 
+                                    min="0.1" 
+                                    max="5" 
+                                    step="0.1" 
+                                    value={colorRangeScaling} 
+                                    onChange={(e) => setColorRangeScaling(parseFloat(e.target.value))}
+                                />
+                            </label>
+                            <br></br>
+                            <label>
+                                Water Color Intensity: 
+                                <input 
+                                    type="range" 
+                                    min="0.1" 
+                                    max="5" 
+                                    step="0.1" 
+                                    value={waterColorRangeScaling} 
+                                    onChange={(e) => setWaterColorRangeScaling(parseFloat(e.target.value))}
+                                />
+                            </label>
+                        </div>
+                    )} 
+                </div>
+                <div className="open-map-options">
+                    <h3>Options</h3>
+                    <MdOutlineFileDownload className="options-download" onClick={handleDownload}/>
+                    <IoIosArrowUp 
+                        onClick={() => setAreControlsVisible(!areControlsVisible)}
+                        className={areControlsVisible ? 'rotated' : ''}
+                    />
+                </div>
             </div>
+            </Draggable>
             <div className="map-options">
                 <Link to="/tools" style={{ textDecoration: 'none' }}>
                     <button class="cancel-button" id="map-cancel">Cancel</button>
                 </Link>
-                <button class="create-button" id="map-download" onClick={handleDownload}>Download</button>
                 <Link to="/3d-map" style={{ textDecoration: 'none' }} onClick={handleNext}>
                     <button class="create-button" id="map-next">Next</button>
                 </Link>
             </div>
+        </TransformWrapper>
         </div>
     );
 };

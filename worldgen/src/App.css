@@ -688,15 +688,22 @@ body {
   flex-direction: column;
   height: 100%;
   justify-content: center;
-  padding-right: 200px;
   width: 100%;
-  padding-bottom: 100px;
+  width: -webkit-fill-available;
 }
 
 .map-container {
-  height: 300px;
-  width: 600px;
   position: relative;
+  border: none;
+  transform: scale(.3) translateY(-1060px);
+}
+
+.canvas-main {
+  border: 3px dashed #ffffff00;
+}
+
+.canvas-main:hover {
+  border: 3px dashed #ffd900;
 }
 
 .canvas-overlay {
@@ -721,30 +728,98 @@ body {
 }
 
 .control-panel {
-  padding-top: 20px;
-  padding-bottom: 20px;
-  background-color: var(--secondary-highlight);
   z-index: 999;
-
   position: absolute;
-  height: 200px;
+  height: 250px;
   width: 310px;
   right: 20px;
-  bottom: 80px;
+  bottom: 60px;
+  border-radius: 20px;
 }
 
 .control-panel Button{
-  background-color: var(--secondary-highlight);
+  backdrop-filter: blur(5px) saturate(200%);
+  -webkit-backdrop-filter: blur(5px) saturate(200%);
+  background-color: var(--primary-highlight);
   font-size: 10px;
-  color: var(--tertiary-higlight);
+  color: var(--tertiary-color);
   font-weight: 700;
-  border-color: var(--secondary-color) !important;
+  border: 1px solid var(--tertiary-color) !important;
+}
+
+.control-panel .controls {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: max-height 0.5s ease, opacity 0.5s ease, transform 0.5s ease;
+  border: none;
+  background-color: transparent; 
+}
+
+.control-panel .controls.visible {
+  max-height: 250px; 
+  width:100%;
+  opacity: 1;
+  transform: translateY(0%);
+
+  backdrop-filter: blur(5px) saturate(200%);
+  -webkit-backdrop-filter: blur(5px) saturate(200%);
+  background-color: var(--primary-highlight);
+  border: 2px solid var(--tertiary-color) !important;
+
+  padding-top: 20px;
+  padding-bottom: 78px;
+  border-radius: 20px;
+}
+
+.control-panel .open-map-options {
+  cursor: pointer;
+  color: var(--tertiary-color);
+  font-size: large;
+}
+
+.control-panel .open-map-options .IoIosArrowUp.rotated {
+  transform: rotate(-180deg); 
+  transition: transform 0.5s ease;
 }
 
 .land-buttons{
   height: 25px;
   width: 300px;
   margin-bottom: 20px;
+  transform: scale(0.85);
+
+  display: block;
+  box-shadow: none;
+}
+
+.open-map-options{
+  align-items: center;
+  -webkit-backdrop-filter: blur(5px) saturate(200%);
+  backdrop-filter: blur(5px) saturate(200%);
+  background-color: var(--primary-highlight);
+  border-radius: 20px;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  position: absolute;
+  width: 100%;
+  height: 40px;
+  border: 2px solid var(--tertiary-color) !important;
+}
+
+.open-map-options h3{
+  margin-right: 180px;
+  font-size: smaller;
+  color: var(--tertiary-color);
+}
+
+.options-download{
+  margin-right: 10px;
+  font-size: larger;
+  color: var(--tertiary-color);
 }
 
 .noise-type{

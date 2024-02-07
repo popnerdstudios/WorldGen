@@ -6,7 +6,7 @@ const path = require('path');
 let mainWindow;
 app.on("ready", ()=>{
     mainWindow = new BrowserWindow({
-        width: 1000,
+        width: 1150,
         height: 600,
         autoHideMenuBar: true,
         frame: false,
