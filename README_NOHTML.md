@@ -99,31 +99,36 @@ To open the React application using Electron, run:
 npm run electron
 ```
 
+<!-- ROADMAP -->
 ## Roadmap
 
 
 ### Todo
 
-- [ ] Input Handling
+- [ ] Name Generation
+- [ ] AI Integration
 
 ### In Progress
 
  - [ ] App UI
-    - [x] My World
     - [x] Create World
     - [x] World List
     - [ ] World Page
-    - [ ] World Subpages
     - [x] Templates
     - [x] Tools
     - [x] Documentation
+ 
+ - [ ] MapGen
+    - [x] Customizable Land/Colors
+    - [ ] Named Locations / Borders
+    - [ ] Rivers / Mountains / Deserts
+    - [ ] Cities / Villages / Ouposts
+    - [ ] Custom Waypoints
 
 
- - [ ] Setup Database
+ - [ ] Database
    - [x] World List DB
    - [ ] World Data DB
-
-### Done ✓
 
 ## Contributing
 
